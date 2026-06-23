@@ -69,7 +69,6 @@ function HeroSection() {
               {'            '}<span className="hero__code-string">"competitive_prog"</span>,<br />
               {'            '}<span className="hero__code-string">"system_design"</span><br />
               {'        '}]<br />
-              {'        '}self.open_for = <span className="hero__code-string">"juniors"</span><br />
               <br />
               {'    '}<span className="hero__code-keyword">def</span> <span className="hero__code-func">build</span>(self):<br />
               {'        '}<span className="hero__code-keyword">return</span> <span className="hero__code-string">"shipping..."</span>

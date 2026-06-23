@@ -103,7 +103,7 @@ function LandingPage() {
             onClick={handleSkipVideo}
             aria-label="Skip animation"
           >
-            SKIP <span className="landing__skip-arrow">→</span>
+            SKIP
           </button>
         </div>
 

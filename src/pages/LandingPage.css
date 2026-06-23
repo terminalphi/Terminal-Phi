@@ -18,8 +18,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(93, 202, 165, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(93, 202, 165, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(212, 175, 55, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.04) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: gridPulse 6s ease-in-out infinite;
 }
@@ -35,7 +35,7 @@
 .landing__orb--1 {
   width: 400px;
   height: 400px;
-  background: rgba(93, 202, 165, 0.06);
+  background: rgba(212, 175, 55, 0.06);
   top: -100px;
   right: -100px;
   animation: float 12s ease-in-out infinite;
@@ -44,7 +44,7 @@
 .landing__orb--2 {
   width: 350px;
   height: 350px;
-  background: rgba(93, 202, 165, 0.04);
+  background: rgba(212, 175, 55, 0.04);
   bottom: -80px;
   left: -80px;
   animation: float 15s ease-in-out infinite reverse;
@@ -153,12 +153,12 @@
 .landing__logo {
   width: clamp(180px, 30vw, 320px);
   height: auto;
-  filter: drop-shadow(0 0 30px rgba(93, 202, 165, 0.2));
+  filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.2));
   transition: filter var(--transition-normal);
 }
 
 .landing__logo:hover {
-  filter: drop-shadow(0 0 50px rgba(93, 202, 165, 0.4));
+  filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.4));
 }
 
 /* Terminal typewriter */

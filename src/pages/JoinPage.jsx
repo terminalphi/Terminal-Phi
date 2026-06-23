@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import HeroSection from '../components/HeroSection';
+import JoinSection from '../components/JoinSection';
 import Footer from '../components/Footer';
 import './MainSite.css';
 
-function MainSite() {
+function JoinPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -16,10 +16,12 @@ function MainSite() {
   return (
     <div className={`main-site ${loaded ? 'main-site--loaded' : ''}`}>
       <Navbar />
-      <HeroSection />
+      <div style={{ paddingTop: '100px' }}>
+        <JoinSection />
+      </div>
       <Footer />
     </div>
   );
 }
 
-export default MainSite;
+export default JoinPage;

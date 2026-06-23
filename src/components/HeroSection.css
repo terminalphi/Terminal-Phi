@@ -15,8 +15,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(93, 202, 165, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(93, 202, 165, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(212, 175, 55, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.025) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
@@ -32,7 +32,7 @@
 .hero__orb--1 {
   width: 600px;
   height: 600px;
-  background: rgba(93, 202, 165, 0.04);
+  background: rgba(212, 175, 55, 0.04);
   top: -200px;
   left: -150px;
   animation: float 15s ease-in-out infinite;
@@ -41,7 +41,7 @@
 .hero__orb--2 {
   width: 450px;
   height: 450px;
-  background: rgba(93, 202, 165, 0.03);
+  background: rgba(212, 175, 55, 0.03);
   bottom: -150px;
   right: -100px;
   animation: float 20s ease-in-out infinite reverse;
@@ -76,7 +76,7 @@
   padding: 6px 16px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-accent);
-  background: rgba(93, 202, 165, 0.05);
+  background: rgba(212, 175, 55, 0.05);
   margin-bottom: var(--space-xl);
 }
 
@@ -103,15 +103,15 @@
 
 .hero__title-line {
   display: block;
-  font-size: clamp(3.5rem, 8vw, 7rem);
-  font-weight: 800;
+  font-size: clamp(4.25rem, 9.5vw, 8.5rem);
+  font-weight: 900;
   letter-spacing: -0.04em;
   color: var(--text-primary);
 }
 
 .hero__title-accent {
   color: var(--accent);
-  text-shadow: 0 0 60px rgba(93, 202, 165, 0.2);
+  text-shadow: 0 0 60px rgba(212, 175, 55, 0.2);
 }
 
 .hero__subtitle {

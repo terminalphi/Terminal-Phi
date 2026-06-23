@@ -1,93 +1,9 @@
 /* ============================================
-   About Section Styles
+   About Section — knowledge-graph layout
+   (card + connector styles live in index.css)
    ============================================ */
 
-.about__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
-}
-
-.about__card {
+.about {
   position: relative;
-  padding: var(--space-xl);
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  transition: all 0.7s var(--ease-out), border-color var(--transition-normal), box-shadow var(--transition-normal);
-  opacity: 0;
-  transform: translateY(30px);
-  overflow: hidden;
-}
-
-.about__card--visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.about__card--visible:nth-child(2) {
-  transition-delay: 0.15s;
-}
-
-.about__card--visible:nth-child(3) {
-  transition-delay: 0.3s;
-}
-
-.about__card:hover {
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-card-hover);
-  background: var(--bg-card-hover);
-  transform: translateY(-4px);
-}
-
-.about__card-index {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 800;
-  color: rgba(93, 202, 165, 0.08);
-  line-height: 1;
-  margin-bottom: var(--space-md);
-  display: block;
-  transition: color var(--transition-normal);
-}
-
-.about__card:hover .about__card-index {
-  color: rgba(93, 202, 165, 0.15);
-}
-
-.about__card-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-md);
-}
-
-.about__card-text {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-  font-weight: 300;
-}
-
-.about__card-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent);
-  transition: width 0.5s var(--ease-out);
-}
-
-.about__card:hover .about__card-line {
-  width: 100%;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .about__grid {
-    grid-template-columns: 1fr;
-    max-width: 600px;
-  }
+  background: var(--bg-primary);
 }

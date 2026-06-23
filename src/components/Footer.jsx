@@ -47,9 +47,10 @@ function Footer() {
           <div>
             <h3 className="footer__col-title">QUICK LINKS</h3>
             <ul className="footer__link-list">
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#activities">Activities</a></li>
-              <li><a href="#events">Events</a></li>
+              <li><a href="/about_us">About Us</a></li>
+              <li><a href="/activities">Activities</a></li>
+              <li><a href="/events">Events</a></li>
+              <li><a href="/join_us">Join Us</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
           </div>
@@ -77,7 +78,7 @@ function Footer() {
           </p>
           <span className="footer__status">
             <span className="footer__status-dot" />
-            Code. Build. Ship.
+            Terminal Phi
           </span>
         </div>
       </div>
