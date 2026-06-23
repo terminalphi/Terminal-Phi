@@ -1,22 +1,20 @@
 // ============================================================================
 // OAUTH INTEGRATION FILE (Supabase)
 // ============================================================================
-// INSTRUCTIONS:
-// 1. Go to https://supabase.com/ and sign in (you can use your "other email" here).
-// 2. Create a new Project.
-// 3. Navigate to "Authentication" -> "Providers" in the dashboard.
-// 4. Enable the Google OAuth provider and configure its Client ID and Secret.
-// 5. Navigate to "Project Settings" -> "API" to find your URL and anon key.
-// 6. Replace the placeholder values in the `createClient` function below with 
-//    your actual Supabase URL and anon public key.
-// 7. Install Supabase: Run `npm install @supabase/supabase-js` in your terminal.
+// CONFIG:
+// Supabase URL and anon (public) key are read from environment variables
+// defined in the project's `.env` file:
+//   VITE_SUPABASE_URL=...
+//   VITE_SUPABASE_ANON_KEY=...
+// The anon key is a publishable key and is safe to expose to the client.
+// Run `npm install @supabase/supabase-js` if it is not already installed.
 // ============================================================================
 
 import { createClient } from '@supabase/supabase-js';
 
-// Replace these with your actual Supabase project URL and anon key
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+// Read Supabase project URL and anon key from environment (.env)
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Initialize Supabase Client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
