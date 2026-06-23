@@ -5,8 +5,7 @@
 // 1. Go to https://supabase.com/ and sign in (you can use your "other email" here).
 // 2. Create a new Project.
 // 3. Navigate to "Authentication" -> "Providers" in the dashboard.
-// 4. Enable the OAuth providers you want (e.g., Google, GitHub) and configure
-//    their Client IDs and Secrets.
+// 4. Enable the Google OAuth provider and configure its Client ID and Secret.
 // 5. Navigate to "Project Settings" -> "API" to find your URL and anon key.
 // 6. Replace the placeholder values in the `createClient` function below with 
 //    your actual Supabase URL and anon public key.
@@ -43,26 +42,6 @@ export const signInWithGoogle = async () => {
   }
 };
 
-/**
- * Sign in with GitHub OAuth
- */
-export const signInWithGithub = async () => {
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        // Redirect back to the site after login
-        redirectTo: window.location.origin + '/home',
-      }
-    });
-
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error("Error signing in with GitHub:", error.message);
-    throw error;
-  }
-};
 
 /**
  * Sign out the current user
