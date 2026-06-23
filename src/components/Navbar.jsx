@@ -52,13 +52,13 @@ function Navbar() {
         <div className="navbar__links">
           <button className={`navbar__link ${isActive('/about_us') ? 'navbar__link--active' : ''}`} onClick={() => handleNav('/about_us')}>ABOUT</button>
           <button className={`navbar__link ${isActive('/activities') ? 'navbar__link--active' : ''}`} onClick={() => handleNav('/activities')}>ACTIVITIES</button>
-          <button className="navbar__link" onClick={() => handleNav('#events')}>EVENTS</button>
+          <button className={`navbar__link ${isActive('/events') ? 'navbar__link--active' : ''}`} onClick={() => handleNav('/events')}>EVENTS</button>
           <button className="navbar__link" onClick={() => handleNav('#contact')}>CONTACT</button>
         </div>
 
         {/* Actions */}
         <div className="navbar__actions">
-          <button className="navbar__join-btn" onClick={() => handleNav('#contact')}>
+          <button className={`navbar__join-btn ${isActive('/join_us') ? 'navbar__join-btn--active' : ''}`} onClick={() => handleNav('/join_us')}>
             Join Us
           </button>
           <button
@@ -77,9 +77,9 @@ function Navbar() {
       <div className={`navbar__mobile ${mobileOpen ? 'navbar__mobile--open' : ''}`}>
         <button className="navbar__mobile-link" onClick={() => handleNav('/about_us')}>ABOUT</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('/activities')}>ACTIVITIES</button>
-        <button className="navbar__mobile-link" onClick={() => handleNav('#events')}>EVENTS</button>
+        <button className="navbar__mobile-link" onClick={() => handleNav('/events')}>EVENTS</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('#contact')}>CONTACT</button>
-        <button className="navbar__mobile-join" onClick={() => handleNav('#contact')}>Join Us</button>
+        <button className="navbar__mobile-join" onClick={() => handleNav('/join_us')}>Join Us</button>
       </div>
     </nav>
   );

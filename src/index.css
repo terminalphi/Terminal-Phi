@@ -1,5 +1,5 @@
 /* ============================================
-   TERMINAL PHI — Design System & Global Styles
+   TERMINAL PHI â€” Design System & Global Styles
    ============================================ */
 
 /* --- CSS Custom Properties / Design Tokens --- */
@@ -12,11 +12,11 @@
   --bg-card-hover: rgba(255, 255, 255, 0.05);
   --bg-glass: rgba(10, 10, 10, 0.75);
 
-  --accent: #5dcaa5;
-  --accent-dim: #3a8a6e;
-  --accent-bright: #7eedc5;
-  --accent-glow: rgba(93, 202, 165, 0.15);
-  --accent-glow-strong: rgba(93, 202, 165, 0.35);
+  --accent: #d4af37;
+  --accent-dim: #9a7b22;
+  --accent-bright: #f2d785;
+  --accent-glow: rgba(212, 175, 55, 0.15);
+  --accent-glow-strong: rgba(212, 175, 55, 0.35);
 
   --text-primary: #e8e8e8;
   --text-secondary: #888888;
@@ -24,8 +24,8 @@
   --text-accent: var(--accent);
 
   --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-accent: rgba(93, 202, 165, 0.2);
-  --border-accent-strong: rgba(93, 202, 165, 0.5);
+  --border-accent: rgba(212, 175, 55, 0.2);
+  --border-accent-strong: rgba(212, 175, 55, 0.5);
 
   /* Typography */
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
@@ -183,12 +183,12 @@ img, video {
 
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 700;
+  font-size: clamp(2.6rem, 6vw, 4.75rem);
+  font-weight: 800;
   color: var(--text-primary);
-  line-height: 1.1;
+  line-height: 1.05;
   margin-bottom: var(--space-2xl);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 /* --- Keyframe Animations --- */
@@ -237,7 +237,7 @@ img, video {
 
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(93, 202, 165, 0.05);
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(212, 175, 55, 0.05);
   }
   50% {
     box-shadow: 0 0 30px var(--accent-glow-strong), 0 0 60px var(--accent-glow);
@@ -329,10 +329,301 @@ img, video {
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(93, 202, 165, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(93, 202, 165, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
   animation: gridPulse 8s ease-in-out infinite;
+}
+
+/* ============================================
+   Knowledge Graph layout (amsociety-style)
+   Shared by Activities & About sections
+   Light "parchment" cards + gold connectors
+   ============================================ */
+:root {
+  --kg-line: rgba(212, 175, 55, 0.45);
+  --kg-card-bg: #f7f2e4;
+  --kg-card-bg-hover: #fbf7ec;
+  --kg-card-border: rgba(212, 175, 55, 0.35);
+  --kg-card-border-hover: rgba(212, 175, 55, 0.75);
+  --kg-ink: #17150f;
+  --kg-ink-soft: #5f5847;
+  --kg-gold-deep: #8a6d1f;
+}
+
+.kgraph__head {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.kgraph__head .section-eyebrow {
+  margin-bottom: var(--space-sm);
+}
+
+.kgraph__head .section-title {
+  margin-bottom: var(--space-md);
+}
+
+.kgraph__subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+/* Central category node + trunk */
+.kgraph__tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kgraph__node {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  padding: 12px 28px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: rgba(212, 175, 55, 0.07);
+  box-shadow: 0 0 24px var(--accent-glow);
+  /* entrance */
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+.kgraph--in .kgraph__node {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  /* gold ring pulse once the node has settled */
+  animation: kgPulse 2.8s ease-out 1.2s infinite;
+}
+
+.kgraph__trunk {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--accent), var(--kg-line));
+  /* draws downward from the node */
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.4s var(--ease-out) 0.35s;
+}
+
+.kgraph--in .kgraph__trunk {
+  transform: scaleY(1);
+}
+
+/* Card grid */
+.kgraph__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+/* Horizontal "bus" line + per-card drops (desktop only) */
+.kgraph__grid::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 16.66%;
+  right: 16.66%;
+  height: 1px;
+  background: var(--kg-line);
+  /* draws outward from the centre */
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.5s var(--ease-out) 0.7s;
+}
+
+.kgraph--in .kgraph__grid::before {
+  transform: scaleX(1);
+}
+
+.kcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl);
+  background: var(--kg-card-bg);
+  border: 1px solid var(--kg-card-border);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  /* snappy, interactive transitions (hover) — entrance is a keyframe */
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.kcard::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 1px;
+  height: 20px;
+  background: var(--kg-line);
+  /* drop line extends down to each card */
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.3s var(--ease-out) 0.95s;
+}
+
+.kgraph--in .kcard::before {
+  transform: translateX(-50%) scaleY(1);
+}
+
+/* Only the first row (3 cards) connects to the bus line */
+.kgraph__grid .kcard:nth-child(n+4)::before {
+  display: none;
+}
+
+.kcard--visible {
+  opacity: 1;
+  /* fill: backwards keeps it hidden during the stagger delay, then releases
+     transform back to the element so hover-lift still works */
+  animation: kgRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.kcard:hover {
+  background: var(--kg-card-bg-hover);
+  border-color: var(--kg-card-border-hover);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--kg-card-border-hover);
+  transform: translateY(-5px);
+}
+
+@keyframes kgRise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kgPulse {
+  0% {
+    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 0 rgba(212, 175, 55, 0.32);
+  }
+  70% {
+    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 16px rgba(212, 175, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+
+/* Respect reduced-motion: show the fully assembled graph, no animation */
+@media (prefers-reduced-motion: reduce) {
+  .kgraph__node,
+  .kgraph__trunk,
+  .kgraph__grid::before,
+  .kcard,
+  .kcard::before {
+    transition: none !important;
+    animation: none !important;
+  }
+  .kgraph__node {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .kgraph__trunk {
+    transform: scaleY(1) !important;
+  }
+  .kgraph__grid::before {
+    transform: scaleX(1) !important;
+  }
+  .kcard {
+    opacity: 1 !important;
+  }
+  .kcard::before {
+    transform: translateX(-50%) scaleY(1) !important;
+  }
+}
+
+.kcard__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.kcard__tag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--kg-gold-deep);
+  padding: 4px 9px;
+  border: 1px solid var(--kg-card-border-hover);
+  border-radius: 3px;
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.kcard__title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--kg-ink);
+  line-height: 1.25;
+  margin-bottom: var(--space-md);
+}
+
+.kcard__desc {
+  font-size: 0.88rem;
+  color: var(--kg-ink-soft);
+  line-height: 1.7;
+  margin-bottom: var(--space-lg);
+  flex: 1;
+}
+
+.kcard__explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--kg-gold-deep);
+  transition: color var(--transition-fast), gap var(--transition-fast);
+  background: none;
+  cursor: pointer;
+}
+
+.kcard__explore:hover {
+  color: var(--accent);
+  gap: 10px;
+}
+
+.kcard__explore svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .kgraph__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kgraph__grid::before,
+  .kcard::before {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .kgraph__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* --- Responsive Breakpoints --- */

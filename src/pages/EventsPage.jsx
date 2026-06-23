@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import HeroSection from '../components/HeroSection';
+import EventsSection from '../components/EventsSection';
 import Footer from '../components/Footer';
 import './MainSite.css';
 
-function MainSite() {
+function EventsPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -16,10 +16,12 @@ function MainSite() {
   return (
     <div className={`main-site ${loaded ? 'main-site--loaded' : ''}`}>
       <Navbar />
-      <HeroSection />
+      <div style={{ paddingTop: '100px' }}>
+        <EventsSection />
+      </div>
       <Footer />
     </div>
   );
 }
 
-export default MainSite;
+export default EventsPage;

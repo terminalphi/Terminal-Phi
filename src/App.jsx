@@ -5,6 +5,8 @@ import SignInPage from './pages/SignInPage';
 import MainSite from './pages/MainSite';
 import AboutPage from './pages/AboutPage';
 import ActivitiesPage from './pages/ActivitiesPage';
+import EventsPage from './pages/EventsPage';
+import JoinPage from './pages/JoinPage';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -30,6 +32,8 @@ function AnimatedRoutes() {
         <Route path="/home" element={<MainSite />} />
         <Route path="/about_us" element={<AboutPage />} />
         <Route path="/activities" element={<ActivitiesPage />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/join_us" element={<JoinPage />} />
       </Routes>
     </div>
   );

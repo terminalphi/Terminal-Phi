@@ -105,7 +105,7 @@ function SignInPage() {
 
         {/* Guest */}
         <button className="signin__guest" onClick={handleGuest} id="guest-button">
-          continue as guest →
+          continue as guest
         </button>
       </div>
 
