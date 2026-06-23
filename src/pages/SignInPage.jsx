@@ -1,32 +1,31 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signInWithGoogle } from '../auth';
 import './SignInPage.css';
 
 function SignInPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [statusText, setStatusText] = useState('');
-  const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowContent(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-    setStatusText('> authenticating...');
-
-    // Simulate auth delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    setStatusText('> access granted');
-
-    await new Promise(resolve => setTimeout(resolve, 600));
-    navigate('/home');
+    setStatusText('> redirecting to google...');
+    try {
+      await signInWithGoogle();
+      // Supabase OAuth redirects the browser, so code below may not execute
+      setStatusText('> auth successful');
+    } catch (error) {
+      console.error(error);
+      setStatusText('> auth failed: ' + error.message);
+      setIsLoading(false);
+    }
   };
 
   const handleGuest = () => {
@@ -66,40 +65,27 @@ function SignInPage() {
         </div>
 
         {/* Form */}
-        <form className="signin__form" onSubmit={handleSubmit} id="signin-form">
-          <div className={`signin__field ${focusedField === 'email' ? 'signin__field--focused' : ''}`}>
-            <label className="signin__label" htmlFor="signin-email">
-              <span className="signin__label-prompt">&gt;</span> email
-            </label>
-            <input
-              id="signin-email"
-              type="email"
-              className="signin__input"
-              placeholder="user@terminal.phi"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              onFocus={() => setFocusedField('email')}
-              onBlur={() => setFocusedField(null)}
-              required
-            />
-          </div>
-
-          <div className={`signin__field ${focusedField === 'password' ? 'signin__field--focused' : ''}`}>
-            <label className="signin__label" htmlFor="signin-password">
-              <span className="signin__label-prompt">&gt;</span> password
-            </label>
-            <input
-              id="signin-password"
-              type="password"
-              className="signin__input"
-              placeholder="••••••••"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              onFocus={() => setFocusedField('password')}
-              onBlur={() => setFocusedField(null)}
-              required
-            />
-          </div>
+        <div className="signin__form">
+          <button
+            onClick={handleGoogleLogin}
+            className={`signin__submit ${isLoading ? 'signin__submit--loading' : ''}`}
+            disabled={isLoading}
+            style={{ marginTop: '20px' }}
+          >
+            {isLoading ? (
+              <span className="signin__spinner" />
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span style={{ marginLeft: '12px' }}>SIGN IN WITH GOOGLE</span>
+              </>
+            )}
+          </button>
 
           {/* Status line */}
           {statusText && (
@@ -108,25 +94,7 @@ function SignInPage() {
               <span className="signin__status-text">{statusText}</span>
             </div>
           )}
-
-          <button
-            type="submit"
-            className={`signin__submit ${isLoading ? 'signin__submit--loading' : ''}`}
-            disabled={isLoading}
-            id="signin-submit"
-          >
-            {isLoading ? (
-              <span className="signin__spinner" />
-            ) : (
-              <>
-                <span>ACCESS GRANTED</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </>
-            )}
-          </button>
-        </form>
+        </div>
 
         {/* Divider */}
         <div className="signin__divider">
