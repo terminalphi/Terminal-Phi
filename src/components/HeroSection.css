@@ -232,6 +232,20 @@
   box-shadow: var(--shadow-glow-strong);
 }
 
+/* Prominent primary CTA on the home page */
+.hero__cta-primary--lg {
+  padding: 20px 52px;
+  font-size: 1.05rem;
+  letter-spacing: 0.16em;
+  gap: var(--space-md);
+  box-shadow: 0 0 28px var(--accent-glow);
+}
+
+.hero__cta-primary--lg svg {
+  width: 20px;
+  height: 20px;
+}
+
 .hero__cta-secondary {
   padding: 13px 28px;
   font-family: var(--font-mono);

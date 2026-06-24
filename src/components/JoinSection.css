@@ -146,6 +146,18 @@
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
 }
 
+/* Email prefilled from the signed-in Google account — read-only */
+.join__input--locked {
+  color: var(--accent-bright);
+  border-color: var(--border-accent);
+  background: rgba(212, 175, 55, 0.06);
+  cursor: not-allowed;
+}
+
+.join__input--locked:focus {
+  box-shadow: none;
+}
+
 /* Submit */
 .join__submit {
   display: flex;

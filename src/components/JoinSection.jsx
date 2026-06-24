@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import * as htmlToImage from 'html-to-image';
 import ReflectiveCard from './ReflectiveCard';
+import { getCurrentUser } from '../auth';
 import './JoinSection.css';
 
 const perks = [
-  'Ship real projects with a team',
-  'Mentorship for hackathons & interviews',
-  'Weekly CP, system design & build sessions',
+  'Build projects with your assigned team',
+  'Problem solving & build sessions',
 ];
 
 function JoinSection() {
@@ -14,9 +14,11 @@ function JoinSection() {
   const videoRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState('form'); // 'form' | 'preview' | 'success'
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [memberId, setMemberId] = useState('');
+  const [emailLocked, setEmailLocked] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', college: '', branch: '', rollNo: '', interest: '', github: '', why: '', strength: '',
+    name: '', email: '', phone: '', rollNo: '', interest: '', github: '', why: '',
   });
 
   useEffect(() => {
@@ -28,6 +30,20 @@ function JoinSection() {
     );
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
+  }, []);
+
+  // If the user is authenticated, prefill + lock their email
+  useEffect(() => {
+    let mounted = true;
+    getCurrentUser()
+      .then((user) => {
+        if (mounted && user?.email) {
+          setFormData((prev) => ({ ...prev, email: user.email }));
+          setEmailLocked(true);
+        }
+      })
+      .catch(() => {});
+    return () => { mounted = false; };
   }, []);
 
   const handleChange = (field) => (e) => {
@@ -49,12 +65,14 @@ function JoinSection() {
 
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
+    setPhotoUrl('');
+    setMemberId(`TP-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getFullYear()}`);
     setStep('preview');
     startCamera();
     window.scrollTo({ top: sectionRef.current?.offsetTop ?? 0, behavior: 'smooth' });
@@ -62,33 +80,36 @@ function JoinSection() {
 
   const handleFinalSubmit = async () => {
     try {
-      setIsCapturing(true);
-      // Wait for React to re-render ReflectiveCard with the canvas instead of video
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Freeze the live webcam to a still image so html-to-image can capture
+      // it reliably (a <video> element and SVG url() filters do not capture).
+      const video = videoRef.current;
+      if (video && video.videoWidth) {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        setPhotoUrl(canvas.toDataURL('image/png'));
+      }
+
+      // Let React swap the <video> for the captured <img> before snapshotting
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       const cardElement = document.getElementById('member-card-download');
-      
       const dataUrl = await htmlToImage.toPng(cardElement, {
-        quality: 1,
         pixelRatio: 2,
-        style: {
-          transform: 'none',
-        }
+        cacheBust: true,
       });
 
-      // Create download link
       const link = document.createElement('a');
       link.download = 'terminal-phi-member-card.png';
       link.href = dataUrl;
       link.click();
-      
+
       setStep('success');
     } catch (err) {
       console.error('Error generating card image:', err);
-      // Still proceed to success state even if download fails
       setStep('success');
     } finally {
-      setIsCapturing(false);
       stopCamera();
     }
   };
@@ -135,11 +156,11 @@ function JoinSection() {
           ) : step === 'preview' ? (
             <div className="join__result">
               <div className="join__preview-card-wrap">
-                <ReflectiveCard formData={formData} videoRef={videoRef} isCapturing={isCapturing} />
+                <ReflectiveCard formData={formData} videoRef={videoRef} photoUrl={photoUrl} memberId={memberId} />
               </div>
 
               <div className="join__preview-actions">
-                <button type="button" className="join__back-btn" onClick={() => setStep('form')}>
+                <button type="button" className="join__back-btn" onClick={() => { stopCamera(); setStep('form'); }}>
                   Back to Edit
                 </button>
                 <button type="button" className="join__submit" onClick={handleFinalSubmit} style={{ width: 'auto', padding: '16px 32px' }}>
@@ -153,10 +174,17 @@ function JoinSection() {
                 <span className="join__group-title">01 · Basic Details</span>
                 <div className="join__grid">
                   <input className="join__input" type="text" placeholder="Full name" value={formData.name} onChange={handleChange('name')} required />
-                  <input className="join__input" type="email" placeholder="Email address" value={formData.email} onChange={handleChange('email')} required />
+                  <input
+                    className={`join__input ${emailLocked ? 'join__input--locked' : ''}`}
+                    type="email"
+                    placeholder="Email address"
+                    value={formData.email}
+                    onChange={handleChange('email')}
+                    readOnly={emailLocked}
+                    title={emailLocked ? 'Linked to your signed-in Google account' : undefined}
+                    required
+                  />
                   <input className="join__input" type="tel" placeholder="Phone number" value={formData.phone} onChange={handleChange('phone')} required />
-                  <input className="join__input" type="text" placeholder="College / University" value={formData.college} onChange={handleChange('college')} required />
-                  <input className="join__input" type="text" placeholder="Course, year & branch (e.g. B.Tech, 2nd yr, CSE)" value={formData.branch} onChange={handleChange('branch')} required />
                   <input className="join__input" type="text" placeholder="Roll number / Student ID" value={formData.rollNo} onChange={handleChange('rollNo')} required />
                   <input className="join__input" type="text" placeholder="Primary interest (Web, ML, CP, System Design…)" value={formData.interest} onChange={handleChange('interest')} required />
                   <input className="join__input" type="url" placeholder="GitHub / portfolio link (optional)" value={formData.github} onChange={handleChange('github')} />
@@ -173,14 +201,6 @@ function JoinSection() {
                   onChange={handleChange('why')}
                   required
                 />
-                <textarea
-                  className="join__textarea"
-                  rows={5}
-                  placeholder="Why do you think you're a strong candidate to be a good contributor to the work this society intends to do?"
-                  value={formData.strength}
-                  onChange={handleChange('strength')}
-                  required
-                />
               </div>
 
               <button type="submit" className="join__submit">
@@ -191,7 +211,7 @@ function JoinSection() {
               </button>
 
               <p className="join__disclaimer">
-                Clicking continue will generate your virtual member card.
+                Clicking continue will generate your virtual card.- make sure to enable camera permission
               </p>
             </form>
           )}

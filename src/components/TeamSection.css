@@ -148,7 +148,7 @@
 
 /* Bio */
 .team-card__bio {
-  font-size: 0.84rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
   line-height: 1.65;
   text-align: center;

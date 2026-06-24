@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { signInWithGoogle } from '../auth';
 import './SignInPage.css';
 
 function SignInPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Where to land after auth. Defaults to /home (e.g. the navbar "Login" flow).
+  const next = searchParams.get('next') || '/home';
   const [isLoading, setIsLoading] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [statusText, setStatusText] = useState('');
@@ -18,18 +21,19 @@ function SignInPage() {
     setIsLoading(true);
     setStatusText('> redirecting to google...');
     try {
-      await signInWithGoogle();
-      // Supabase OAuth redirects the browser, so code below may not execute
-      setStatusText('> auth successful');
+      // This only *starts* the OAuth flow — the browser redirects to Google
+      // and auth is not complete until it returns. So we must NOT claim
+      // success here; landing back on `next` confirms it instead.
+      await signInWithGoogle(next);
     } catch (error) {
       console.error(error);
-      setStatusText('> auth failed: ' + error.message);
+      setStatusText('> auth failed: ' + (error?.message || 'could not reach provider'));
       setIsLoading(false);
     }
   };
 
   const handleGuest = () => {
-    navigate('/home');
+    navigate(next);
   };
 
   return (
