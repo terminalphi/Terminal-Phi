@@ -1,98 +1,291 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import './ActivitiesSection.css';
 
-const activities = [
+/* ══════════════════════════════════════════════
+   DATA — Two graph zones, each with its own
+   category label and set of cards.
+   Add / remove cards freely; the SVG engine
+   adapts automatically.
+══════════════════════════════════════════════ */
+const zones = [
   {
-    title: 'Project Building',
-    description: 'Build real-world projects from scratch. From full-stack web apps to ML pipelines — ship production-grade code, not toy examples.',
-    tags: ['Core', 'Hands-on'],
+    label: 'Build & Ship',
+    cards: [
+      {
+        title: 'Project Building',
+        tags: ['Core', 'Hands-on'],
+        desc: 'Build real-world projects from scratch. From full-stack web apps to ML pipelines — ship production-grade code, not toy examples.',
+      },
+      {
+        title: 'Hackathon Participation & Help',
+        tags: ['Core', 'Mentorship'],
+        desc: 'Get support for external hackathons — team formation, mentorship, idea brainstorming, and post-hackathon retrospectives.',
+      },
+      {
+        title: 'Internal Hackathons',
+        tags: ['Events'],
+        desc: 'Regular internal hackathons with curated problem statements. A safe space to experiment, fail fast, and iterate.',
+      },
+    ],
   },
   {
-    title: 'Hackathon Participation & Help',
-    description: 'Get support for external hackathons — team formation, mentorship, idea brainstorming, and post-hackathon retrospectives.',
-    tags: ['Core', 'Mentorship'],
-  },
-  {
-    title: 'Internal Hackathons',
-    description: 'Regular internal hackathons with curated problem statements. A safe space to experiment, fail fast, and iterate.',
-    tags: ['Events'],
-  },
-  {
-    title: 'Mock Interviews',
-    description: 'Practice technical interviews with structured feedback. Covers DSA, system design, and behavioral rounds.',
-    tags: ['Prep'],
-  },
-  {
-    title: 'System Design',
-    description: 'Learn to architect scalable systems. From database design to distributed architectures — think beyond CRUD.',
-    tags: ['Advanced'],
-  },
-  {
-    title: 'DSA / Competitive Programming',
-    description: 'Structured CP training for juniors. Weekly contests, upsolving sessions, and curated problem sets aligned with placement prep.',
-    tags: ['Juniors', 'Weekly'],
+    label: 'Sharpen & Grow',
+    cards: [
+      {
+        title: 'Mock Interviews',
+        tags: ['Prep'],
+        desc: 'Practice technical interviews with structured feedback. Covers DSA, system design, and behavioral rounds.',
+      },
+      {
+        title: 'System Design',
+        tags: ['Advanced'],
+        desc: 'Learn to architect scalable systems. From database design to distributed architectures — think beyond CRUD.',
+      },
+      {
+        title: 'DSA / Competitive Programming',
+        tags: ['Juniors', 'Weekly'],
+        desc: 'Structured CP training for juniors. Weekly contests, upsolving sessions, and curated problem sets aligned with placement prep.',
+      },
+    ],
   },
 ];
 
+/* ══════════════════════════════════════════════
+   COLOUR TOKENS for SVG graph engine
+   Mapped to Terminal Phi design system
+══════════════════════════════════════════════ */
+const C = {
+  LINE:   'rgba(212,175,55,0.3)',    // default connector stroke
+  LINE_H: '#d4af37',                 // hover connector stroke
+  DOT:    'rgba(212,175,55,0.5)',    // flowing dot default
+  DOT_H:  '#f2d785',                 // flowing dot hover
+  END:    'rgba(255,255,255,0.15)',   // endpoint ring default
+  END_H:  '#d4af37',                 // endpoint ring hover
+  SRC:    '#d4af37',                 // source dot at category node
+};
+
+/* ── SVG helper ── */
+function svgEl(tag, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+/* Position of el relative to ancestor */
+function relPos(el, ancestor) {
+  const eR = el.getBoundingClientRect();
+  const aR = ancestor.getBoundingClientRect();
+  return {
+    l: eR.left - aR.left,
+    t: eR.top - aR.top,
+    w: eR.width,
+    h: eR.height,
+    r: eR.right - aR.left,
+    b: eR.bottom - aR.top,
+  };
+}
+
+/* ══════════════════════════════════════════════
+   COMPONENT
+══════════════════════════════════════════════ */
 function ActivitiesSection() {
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
+  // Store animated dot objects across renders
+  const dotsRef = useRef([]);
+  const rafRef = useRef(null);
 
+  /* ── Intersection observer for entrance ── */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setVisible(true);
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
-
     if (sectionRef.current) observer.observe(sectionRef.current);
-    // Fallback: this section sits at the top of its page, so kick off the
-    // assemble animation shortly after mount even if the observer is late.
-    const fallback = setTimeout(() => setVisible(true), 350);
+    const fallback = setTimeout(() => setVisible(true), 400);
     return () => {
       observer.disconnect();
       clearTimeout(fallback);
     };
   }, []);
 
+  /* ── SVG graph engine ── */
+  const initZone = useCallback((id) => {
+    const zone = document.getElementById(`act-zone-${id}`);
+    const svg = document.getElementById(`act-svg-${id}`);
+    const node = document.getElementById(`act-node-${id}`);
+    const cards = zone ? zone.querySelectorAll('.act-card') : [];
+    if (!zone || !svg || !node || !cards.length) return;
+
+    // Clear previous drawing
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    // Size SVG to cover the zone
+    svg.setAttribute('width', zone.offsetWidth);
+    svg.setAttribute('height', zone.offsetHeight);
+
+    // Source: bottom-center of category node
+    const np = relPos(node, zone);
+    const sx = np.l + np.w / 2;
+    const sy = np.b;
+
+    // Filled dot at source
+    svg.appendChild(svgEl('circle', { cx: sx, cy: sy, r: 4, fill: C.SRC }));
+
+    cards.forEach((card, i) => {
+      const cp = relPos(card, zone);
+      const tx = cp.l + cp.w / 2;
+      const ty = cp.t;
+      const dy = ty - sy;
+
+      // Cubic bezier — fans out smoothly
+      const c1y = sy + dy * 0.6;
+      const c2y = ty - dy * 0.2;
+      const d = `M${sx},${sy} C${sx},${c1y} ${tx},${c2y} ${tx},${ty}`;
+
+      // Connector line
+      const path = svgEl('path', {
+        d,
+        fill: 'none',
+        stroke: C.LINE,
+        'stroke-width': '1.2',
+        'stroke-linecap': 'round',
+      });
+      svg.appendChild(path);
+
+      // Hollow endpoint ring at card top
+      const ring = svgEl('circle', {
+        cx: tx, cy: ty, r: 3.5,
+        fill: 'none', stroke: C.END, 'stroke-width': '1.5',
+      });
+      svg.appendChild(ring);
+
+      // Flowing animated dot
+      const dot = svgEl('circle', { cx: tx, cy: ty, r: 3, fill: C.DOT });
+      svg.appendChild(dot);
+
+      const pLen = path.getTotalLength();
+      dotsRef.current.push({
+        el: dot, path, len: pLen,
+        prog: (i / cards.length) * 0.85 + 0.05,
+        spd: 0.0013 + Math.random() * 0.0009,
+      });
+
+      // Hover effects
+      card.addEventListener('mouseenter', () => {
+        path.setAttribute('stroke', C.LINE_H);
+        path.setAttribute('stroke-width', '1.8');
+        ring.setAttribute('stroke', C.END_H);
+        ring.setAttribute('fill', C.END_H);
+        dot.setAttribute('fill', C.DOT_H);
+        dot.setAttribute('r', '4.5');
+      });
+
+      card.addEventListener('mouseleave', () => {
+        path.setAttribute('stroke', C.LINE);
+        path.setAttribute('stroke-width', '1.2');
+        ring.setAttribute('stroke', C.END);
+        ring.setAttribute('fill', 'none');
+        dot.setAttribute('fill', C.DOT);
+        dot.setAttribute('r', '3');
+      });
+    });
+  }, []);
+
+  /* Animation loop */
+  const tick = useCallback(() => {
+    for (const d of dotsRef.current) {
+      d.prog = (d.prog + d.spd) % 1;
+      const pt = d.path.getPointAtLength(d.prog * d.len);
+      d.el.setAttribute('cx', pt.x);
+      d.el.setAttribute('cy', pt.y);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  /* Boot graph engine once visible */
+  useEffect(() => {
+    if (!visible) return;
+
+    // Small delay so DOM has laid out
+    const timer = setTimeout(() => {
+      dotsRef.current = [];
+      for (let i = 0; i < zones.length; i++) initZone(i);
+      rafRef.current = requestAnimationFrame(tick);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [visible, initZone, tick]);
+
+  /* Redraw on resize */
+  useEffect(() => {
+    let rsTimer;
+    const handleResize = () => {
+      clearTimeout(rsTimer);
+      rsTimer = setTimeout(() => {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        dotsRef.current = [];
+        for (let i = 0; i < zones.length; i++) initZone(i);
+        rafRef.current = requestAnimationFrame(tick);
+      }, 150);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(rsTimer);
+    };
+  }, [initZone, tick]);
+
   return (
-    <section className={`activities section ${visible ? 'kgraph--in' : ''}`} id="activities" ref={sectionRef}>
+    <section className="activities section" id="activities" ref={sectionRef}>
       <div className="container">
-        <div className="kgraph__head">
-          <span className="section-eyebrow">What We Do</span>
-          <h2 className="section-title">Our Activities</h2>
-          <p className="kgraph__subtitle">Curated paths for builders, not spectators</p>
+        {/* Hero Header */}
+        <div className="act-hero">
+          <p className="act-hero__eye">curated · structured · hands-on</p>
+          <h2 className="act-hero__h1">Our Activities</h2>
+          <p className="act-hero__sub">Curated paths for builders, not spectators</p>
         </div>
 
-        <div className="kgraph__tree">
-          <span className="kgraph__node">Activities</span>
-          <span className="kgraph__trunk" />
-        </div>
+        {/* Knowledge Graph Zones */}
+        {zones.map((zone, zoneIdx) => (
+          <div className="act-graph-zone" id={`act-zone-${zoneIdx}`} key={zoneIdx}>
+            <svg
+              className="act-graph-svg"
+              id={`act-svg-${zoneIdx}`}
+              xmlns="http://www.w3.org/2000/svg"
+            />
+            <div className="act-graph-content">
+              {/* Category node */}
+              <div className="act-cat-node" id={`act-node-${zoneIdx}`}>
+                {zone.label}
+              </div>
 
-        <div className="kgraph__grid">
-          {activities.map((activity, idx) => (
-            <article
-              key={idx}
-              className={`kcard ${visible ? 'kcard--visible' : ''}`}
-              style={{ animationDelay: `${0.5 + idx * 0.09}s` }}
-            >
-              <div className="kcard__tags">
-                {activity.tags.map((tag, i) => (
-                  <span key={i} className="kcard__tag">{tag}</span>
+              {/* Cards row */}
+              <div className="act-cards-row">
+                {zone.cards.map((card, cardIdx) => (
+                  <div className="act-card" key={cardIdx}>
+                    <h3 className="act-card__title">{card.title}</h3>
+                    <div className="act-card__tags">
+                      {card.tags.map((tag, i) => (
+                        <span className="act-card__tag" key={i}>{tag}</span>
+                      ))}
+                    </div>
+                    <p className="act-card__desc">{card.desc}</p>
+                    <button className="act-card__link">
+                      Explore ↗
+                    </button>
+                  </div>
                 ))}
               </div>
-              <h3 className="kcard__title">{activity.title}</h3>
-              <p className="kcard__desc">{activity.description}</p>
-              <button className="kcard__explore">
-                Explore
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M7 17l9.2-9.2M17 17V7.8H7.8" />
-                </svg>
-              </button>
-            </article>
-          ))}
-        </div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

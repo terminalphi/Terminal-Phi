@@ -1,11 +1,13 @@
 /* ============================================
-   Activities Section — knowledge-graph layout
-   (card + connector styles live in index.css)
+   Activities Section — SVG Knowledge-Graph Layout
+   Adapted from resources-template.html for
+   Terminal Phi dark theme + gold accent.
    ============================================ */
 
 .activities {
   position: relative;
   background: var(--bg-secondary);
+  padding: var(--space-4xl) 0 var(--space-3xl);
 }
 
 .activities::before {
@@ -16,4 +18,206 @@
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+}
+
+/* ── Hero header ── */
+.act-hero {
+  text-align: center;
+  padding-bottom: var(--space-3xl);
+}
+
+.act-hero__eye {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-md);
+}
+
+.act-hero__h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 0.9rem;
+}
+
+.act-hero__sub {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.02em;
+}
+
+/* ── Graph zone — each category section ── */
+.act-graph-zone {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2.5rem 5rem;
+}
+
+/* SVG overlay — sized & positioned by JS */
+.act-graph-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+
+.act-graph-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Category node (the floating box label) ── */
+.act-cat-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--accent);
+  padding: 0.65rem 2.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  background: rgba(212, 175, 55, 0.06);
+  white-space: nowrap;
+  user-select: none;
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+
+/* ── Cards row ── */
+.act-cards-row {
+  display: flex;
+  width: 100%;
+  padding-top: 90px;   /* vertical space where lines are drawn */
+}
+
+/* ── Card ── */
+.act-card {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  background: var(--bg-tertiary);
+  position: relative;
+  cursor: default;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.22s;
+  margin-left: -1px;   /* collapse adjacent borders */
+}
+
+.act-card:first-child {
+  margin-left: 0;
+}
+
+.act-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border-accent);
+  z-index: 2;
+}
+
+.act-card__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+
+.act-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.act-card__tag {
+  border: 1px solid var(--border-accent);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding: 0.18rem 0.5rem;
+  white-space: nowrap;
+  background: rgba(212, 175, 55, 0.06);
+  border-radius: 3px;
+}
+
+.act-card__desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  flex: 1;
+}
+
+.act-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 0.35rem;
+  transition: gap 0.18s, color 0.18s;
+  background: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+}
+
+.act-card__link:hover {
+  gap: 0.55rem;
+  color: var(--accent-bright);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .act-cards-row {
+    flex-direction: column;
+    padding-top: 1.5rem;
+  }
+
+  .act-card {
+    margin-left: 0;
+    margin-top: -1px;
+    flex: none;
+  }
+
+  .act-card:first-child {
+    margin-top: 0;
+  }
+
+  .act-graph-svg {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .act-graph-zone {
+    padding: 0 1rem 3rem;
+  }
 }
