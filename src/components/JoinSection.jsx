@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as htmlToImage from 'html-to-image';
 import ReflectiveCard from './ReflectiveCard';
-import { getCurrentUser } from '../auth';
+import { getCurrentUser, supabase } from '../auth';
 import './JoinSection.css';
 
 const perks = [
@@ -17,6 +17,7 @@ function JoinSection() {
   const [photoUrl, setPhotoUrl] = useState('');
   const [memberId, setMemberId] = useState('');
   const [emailLocked, setEmailLocked] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(''); // for showing errors/loading
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', rollNo: '', interest: '', github: '', why: '',
   });
@@ -78,10 +79,52 @@ function JoinSection() {
     window.scrollTo({ top: sectionRef.current?.offsetTop ?? 0, behavior: 'smooth' });
   };
 
+  // ─── Save form data to Supabase ───
+  const saveToSupabase = async () => {
+    if (!supabase) {
+      console.warn('[JoinSection] Supabase not configured, skipping DB save.');
+      return true; // Don't block the flow if Supabase isn't configured
+    }
+
+    const { error } = await supabase
+      .from('Candidates_data_table')
+      .insert([
+        {
+          Full_Name: formData.name || null,
+          Phone_Number: formData.phone || null,
+          Email: formData.email || null,
+          Roll_Number: formData.rollNo || null,
+          Interests: formData.interest || null,
+          Portfolio: formData.github || null,
+          About: formData.why || null,
+        }
+      ]);
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+
+      // Duplicate roll number
+      if (error.code === '23505') {
+        setSubmitStatus('This Roll Number has already been registered!');
+        return false;
+      }
+
+      setSubmitStatus('Error saving data: ' + error.message);
+      return false;
+    }
+
+    return true;
+  };
+
   const handleFinalSubmit = async () => {
+    setSubmitStatus('Saving your application...');
+
     try {
-      // Freeze the live webcam to a still image so html-to-image can capture
-      // it reliably (a <video> element and SVG url() filters do not capture).
+      // 1. Save to Supabase first
+      const saved = await saveToSupabase();
+      if (!saved) return; // Error message already set
+
+      // 2. Freeze the live webcam to a still image
       const video = videoRef.current;
       if (video && video.videoWidth) {
         const canvas = document.createElement('canvas');
@@ -105,9 +148,11 @@ function JoinSection() {
       link.href = dataUrl;
       link.click();
 
+      setSubmitStatus('');
       setStep('success');
     } catch (err) {
       console.error('Error generating card image:', err);
+      setSubmitStatus('');
       setStep('success');
     } finally {
       stopCamera();
@@ -167,6 +212,13 @@ function JoinSection() {
                   Submit & Download Card
                 </button>
               </div>
+
+              {/* Status/error message */}
+              {submitStatus && (
+                <p style={{ color: submitStatus.startsWith('Error') || submitStatus.startsWith('This') ? '#ff5f57' : '#d4af37', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', textAlign: 'center', marginTop: '12px' }}>
+                  {submitStatus}
+                </p>
+              )}
             </div>
           ) : (
             <form className="join__form" onSubmit={handleContinue}>
