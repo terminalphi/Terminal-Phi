@@ -1,13 +1,9 @@
 // ============================================================================
-// OAUTH INTEGRATION FILE (Supabase)
+// OAUTH INTEGRATION FILE (Supabase + Direct Google Sign-In)
 // ============================================================================
-// CONFIG:
-// Supabase URL and anon (public) key are read from environment variables
-// defined in the project's `.env` file:
-//   VITE_SUPABASE_URL=...
-//   VITE_SUPABASE_ANON_KEY=...
-// The anon key is a publishable key and is safe to expose to the client.
-// Run `npm install @supabase/supabase-js` if it is not already installed.
+// This uses @react-oauth/google for the login popup (so users see
+// "Terminal Phi" instead of "dyvfqm...supabase.co"), then hands the
+// Google ID token to Supabase to create a proper session.
 // ============================================================================
 
 import { createClient } from '@supabase/supabase-js';
@@ -16,8 +12,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Initialize Supabase Client only when configured, so a missing .env never
-// crashes the whole app (auth simply becomes a no-op / falls back).
+// Initialize Supabase Client only when configured
 export const supabase = (supabaseUrl && supabaseAnonKey)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
@@ -27,28 +22,18 @@ if (!supabase) {
 }
 
 /**
- * Sign in with Google OAuth.
- * @param {string} redirectPath - path to return to after auth (default: the join form)
+ * Sign in using a Google ID token (from @react-oauth/google).
+ * This creates a Supabase session WITHOUT redirecting through supabase.co.
  */
-export const signInWithGoogle = async (redirectPath = '/join_us') => {
+export const signInWithGoogleToken = async (idToken) => {
   if (!supabase) throw new Error('Supabase not configured');
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        // Redirect back to the requested page after login
-        redirectTo: window.location.origin + redirectPath,
-      }
-    });
-
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error("Error signing in with Google:", error.message);
-    throw error;
-  }
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: 'google',
+    token: idToken,
+  });
+  if (error) throw error;
+  return data;
 };
-
 
 /**
  * Sign out the current user
@@ -88,11 +73,6 @@ export const onAuthChange = (callback) => {
 
 /**
  * Auth gate used by the "Login" (navbar) and "Join Us" (hero) buttons.
- * - If the user already has a session, send them straight to the join form.
- * - Otherwise take them to the auth page to sign in (which returns to the
- *   join form afterwards).
- * - If auth is unavailable (e.g. Supabase not configured), still let the
- *   user reach the form so the site never dead-ends.
  */
 export const proceedToJoin = async (navigate) => {
   try {
