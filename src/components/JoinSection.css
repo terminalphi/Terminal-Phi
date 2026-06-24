@@ -4,7 +4,7 @@
 
 .join {
   position: relative;
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 /* Perks row */

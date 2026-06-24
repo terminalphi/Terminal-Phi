@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import Threads from './components/Threads';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/SignInPage';
 import MainSite from './pages/MainSite';
@@ -25,19 +26,34 @@ function AnimatedRoutes() {
     }
   }, [location, displayLocation]);
 
+  // Animated thread background sits behind every page except the landing intro.
+  const showThreads = displayLocation.pathname !== '/';
+
   return (
-    <div className={`page-wrapper page-${transitionStage}`}>
-      <Routes location={displayLocation}>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/home" element={<MainSite />} />
-        <Route path="/about_us" element={<AboutPage />} />
-        <Route path="/activities" element={<ActivitiesPage />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/team" element={<TeamPage />} />
-        <Route path="/join_us" element={<JoinPage />} />
-      </Routes>
-    </div>
+    <>
+      {showThreads && (
+        <div className="app-bg-threads" aria-hidden="true">
+          <Threads
+            color={[0.831, 0.686, 0.216]}
+            amplitude={2}
+            distance={0}
+            enableMouseInteraction={false}
+          />
+        </div>
+      )}
+      <div className={`page-wrapper page-${transitionStage}`}>
+        <Routes location={displayLocation}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/home" element={<MainSite />} />
+          <Route path="/about_us" element={<AboutPage />} />
+          <Route path="/activities" element={<ActivitiesPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/team" element={<TeamPage />} />
+          <Route path="/join_us" element={<JoinPage />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 
