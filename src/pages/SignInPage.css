@@ -242,6 +242,44 @@
   overflow: hidden;
 }
 
+/* Google sign-in: custom-styled face with the real Google button overlaid
+   transparently on top so it keeps the old look but stays fully functional. */
+.signin__google {
+  position: relative;
+  width: 100%;
+}
+
+.signin__google .signin__google-face {
+  width: 100%;
+  margin-top: 0;
+  pointer-events: none;
+}
+
+.signin__google-real {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signin__google-real > div,
+.signin__google-real iframe {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Scale the (invisible) Google iframe so its clickable area covers the whole
+   custom button regardless of the iframe's intrinsic size. */
+.signin__google-real iframe {
+  transform: scale(2.2);
+  transform-origin: center;
+}
+
 .signin__submit::before {
   content: '';
   position: absolute;

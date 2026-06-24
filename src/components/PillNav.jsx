@@ -242,7 +242,7 @@ const PillNav = ({
             playsInline
             preload="auto"
           >
-            <source src="/logo_navbar.mp4" type="video/mp4" />
+            <source src="/logo_navbar.webm" type="video/webm" />
           </video>
           <span className="pill-logo-text">
             <span className="pill-logo-prompt">&gt; </span>terminal phi
