@@ -6,6 +6,7 @@ import MainSite from './pages/MainSite';
 import AboutPage from './pages/AboutPage';
 import ActivitiesPage from './pages/ActivitiesPage';
 import EventsPage from './pages/EventsPage';
+import TeamPage from './pages/TeamPage';
 import JoinPage from './pages/JoinPage';
 
 function AnimatedRoutes() {
@@ -33,6 +34,7 @@ function AnimatedRoutes() {
         <Route path="/about_us" element={<AboutPage />} />
         <Route path="/activities" element={<ActivitiesPage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/team" element={<TeamPage />} />
         <Route path="/join_us" element={<JoinPage />} />
       </Routes>
     </div>
