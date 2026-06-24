@@ -5,5 +5,5 @@
 
 .about {
   position: relative;
-  background: var(--bg-primary);
+  background: transparent;
 }

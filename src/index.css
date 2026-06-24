@@ -98,6 +98,28 @@ body {
   min-height: 100vh;
 }
 
+/* --- Animated thread background (behind every page except the landing) --- */
+.app-bg-threads {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Soft dark scrim so foreground text stays readable over the moving lines */
+.app-bg-threads::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.4);
+  pointer-events: none;
+}
+
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
 a {
   color: var(--accent);
   text-decoration: none;

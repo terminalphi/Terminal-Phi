@@ -6,7 +6,7 @@
 
 .activities {
   position: relative;
-  background: var(--bg-secondary);
+  background: transparent;
   padding: var(--space-4xl) 0 var(--space-3xl);
 }
 
