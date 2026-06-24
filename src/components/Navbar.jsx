@@ -57,7 +57,6 @@ function Navbar() {
             { path: '/activities', label: 'ACTIVITIES' },
             { path: '/events', label: 'EVENTS' },
             { path: '/team', label: 'TEAM' },
-            { path: '#contact', label: 'CONTACT' },
           ].map(({ path, label }) => {
             const active = isActive(path);
             const isHovered = hoveredPath === path;
@@ -107,7 +106,7 @@ function Navbar() {
         <button className="navbar__mobile-link" onClick={() => handleNav('/activities')}>ACTIVITIES</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('/events')}>EVENTS</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('/team')}>TEAM</button>
-        <button className="navbar__mobile-link" onClick={() => handleNav('#contact')}>CONTACT</button>
+
         <button className="navbar__mobile-join" onClick={() => handleNav('/join_us')}>Join Us</button>
       </div>
     </nav>

@@ -298,12 +298,15 @@
   align-items: center;
   gap: var(--space-sm);
   animation: float 3s ease-in-out infinite;
+  cursor: pointer;
+  z-index: 10;
 }
 
 .hero__scroll-line {
   width: 1px;
   height: 40px;
   background: linear-gradient(to bottom, var(--accent), transparent);
+  transition: background 0.3s ease;
 }
 
 .hero__scroll-text {
@@ -312,6 +315,39 @@
   color: var(--text-tertiary);
   letter-spacing: 0.15em;
   text-transform: uppercase;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Firework canvas overlay */
+.hero__firework-canvas {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Firework-triggered text glow */
+.hero__scroll--fired .hero__scroll-text {
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--accent-glow-strong);
+}
+
+.hero__scroll--fired .hero__scroll-line {
+  background: linear-gradient(to bottom, var(--accent-bright), var(--accent));
+}
+
+/* Subtitle swap animation */
+.hero__subtitle--swapped {
+  animation: subtitleSwap 0.6s var(--ease-out);
+}
+
+@keyframes subtitleSwap {
+  0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Responsive */
