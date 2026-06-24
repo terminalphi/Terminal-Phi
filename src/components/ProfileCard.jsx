@@ -6,7 +6,7 @@ import './ProfileCard.css';
   ReactBits' ProfileCard, themed for Terminal Phi (gold/dark).
   Tilt + glare follow the pointer via CSS custom properties.
 */
-function ProfileCard({ name, role, bio, image, initials, github, linkedin, handle, status = 'Active', largeBio = false }) {
+function ProfileCard({ name, role, bio, image, initials, github, linkedin, handle, largeBio = false }) {
   const cardRef = useRef(null);
 
   const handlePointerMove = useCallback((e) => {

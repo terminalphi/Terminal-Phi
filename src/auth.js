@@ -36,6 +36,21 @@ export const signInWithGoogleToken = async (idToken) => {
 };
 
 /**
+ * Redirect-based Google sign-in via Supabase. Works with any custom-styled
+ * button (the browser redirects to Google, then back to `redirectPath`).
+ * @param {string} redirectPath - where to land after auth.
+ */
+export const signInWithGoogle = async (redirectPath = '/home') => {
+  if (!supabase) throw new Error('Supabase not configured');
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + redirectPath },
+  });
+  if (error) throw error;
+  return data;
+};
+
+/**
  * Sign out the current user
  */
 export const logoutUser = async () => {

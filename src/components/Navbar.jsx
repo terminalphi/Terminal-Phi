@@ -43,7 +43,7 @@ function Navbar() {
             playsInline
             preload="auto"
           >
-            <source src="/logo_navbar.mp4" type="video/mp4" />
+            <source src="/logo_navbar.webm" type="video/webm" />
           </video>
           <span className="navbar__logo-text">
             <span className="navbar__logo-prompt">&gt; </span>terminal phi
