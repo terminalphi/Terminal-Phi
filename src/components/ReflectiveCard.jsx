@@ -1,11 +1,10 @@
-import { useEffect, useRef } from 'react';
 import './ReflectiveCard.css';
-import { Fingerprint, Activity, Lock } from 'lucide-react';
 
 const ReflectiveCard = ({
   formData,
   videoRef,
-  isCapturing,
+  photoUrl,
+  memberId,
   blurStrength = 12,
   color = 'white',
   metalness = 1,
@@ -19,21 +18,6 @@ const ReflectiveCard = ({
   className = '',
   style = {}
 }) => {
-  const canvasRef = useRef(null);
-
-  // When capturing starts, draw the current video frame to a canvas
-  // because html-to-image/html2canvas cannot capture <video> elements correctly
-  useEffect(() => {
-    if (isCapturing && videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    }
-  }, [isCapturing, videoRef]);
-
   const baseFrequency = 0.03 / Math.max(0.1, noiseScale);
   const saturation = 1 - Math.max(0, Math.min(1, grayscale));
 
@@ -47,8 +31,8 @@ const ReflectiveCard = ({
   };
 
   return (
-    <div 
-      className={`reflective-card-container ${className}`} 
+    <div
+      className={`reflective-card-container ${className}`}
       style={{ ...style, ...cssVariables }}
       id="member-card-download"
     >
@@ -100,11 +84,12 @@ const ReflectiveCard = ({
         </defs>
       </svg>
 
-      {/* We reuse the videoRef passed from JoinSection so the camera stays active globally and can be stopped */}
-      {!isCapturing ? (
-        <video ref={videoRef} autoPlay playsInline muted className="reflective-video" />
+      {/* Live reflective webcam in preview; a frozen still image when capturing
+          for download (a <video> + url() filter cannot be snapshotted). */}
+      {photoUrl ? (
+        <img src={photoUrl} alt="Member" className="reflective-media reflective-photo" />
       ) : (
-        <canvas ref={canvasRef} className="reflective-video" />
+        <video ref={videoRef} autoPlay playsInline muted className="reflective-media reflective-video" />
       )}
 
       <div className="reflective-noise" />
@@ -113,27 +98,21 @@ const ReflectiveCard = ({
 
       <div className="reflective-content">
         <div className="card-header">
-          <div className="security-badge">
-            <Lock size={14} className="security-icon" />
-            <span>SECURE ACCESS</span>
-          </div>
-          <Activity className="status-icon" size={20} />
+          <span className="rc-brand"><span className="rc-prompt">&gt;</span> terminal_phi</span>
+          <span className="rc-tag">MEMBER</span>
         </div>
 
         <div className="card-body">
           <div className="user-info">
-            <h2 className="user-name">{formData?.name || 'YOUR NAME'}</h2>
-            <p className="user-role">{formData?.branch || 'YOUR BRANCH/ROLE'}</p>
+            <h2 className="user-name">{formData?.name || 'Your Name'}</h2>
+            <p className="user-role">{formData?.interest || 'Member'}</p>
           </div>
         </div>
 
         <div className="card-footer">
           <div className="id-section">
-            <span className="label">ID NUMBER</span>
-            <span className="value">TP-{Math.floor(1000 + Math.random() * 9000)}-{new Date().getFullYear()}</span>
-          </div>
-          <div className="fingerprint-section">
-            <Fingerprint size={32} className="fingerprint-icon" />
+            <span className="label">MEMBER ID</span>
+            <span className="value">{memberId || 'TP-0000-2026'}</span>
           </div>
         </div>
       </div>

@@ -122,10 +122,8 @@
   background: var(--bg-tertiary);
   position: relative;
   cursor: default;
-  /* Floating animation — JS sets --float-delay per card */
-  animation: act-float 4s ease-in-out var(--float-delay, 0s) infinite;
-  /* Smooth hover on top of the float */
-  transition: border-color 0.18s, background 0.18s, box-shadow 0.22s;
+  /* Cards stay static so the connector lines/dots remain attached to them */
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.22s, transform 0.22s;
 }
 
 /* Endpoint ring — sits on the card's top border, floats with the card */
@@ -159,7 +157,6 @@
   background: var(--bg-card-hover);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border-accent);
   z-index: 2;
-  transform: translateY(-5px);
 }
 
 .act-card__title {

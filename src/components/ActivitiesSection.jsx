@@ -14,20 +14,20 @@ const zones = [
       {
         title: 'Project Building',
         tags: ['Core', 'Hands-on'],
-        desc: 'Build real-world projects from scratch. From full-stack web apps to ML pipelines — ship production-grade code, not toy examples.',
-        cta: 'Start Building →',
+        desc: 'Build real-world projects from scratch and gain exposure to real-world challenges. From full-stack web apps to ML pipelines — ship production-grade code, not toy examples.',
+        
       },
       {
-        title: 'Hackathon Participation & Help',
-        tags: ['Core', 'Mentorship'],
-        desc: 'Get support for external hackathons — team formation, mentorship, idea brainstorming, and post-hackathon retrospectives.',
-        cta: 'Get Support →',
+        title: 'Real World Problem Solving',
+        tags: ['Core', 'problem solving'],
+        desc: 'Tackle real-world problems and develop practical solutions. Gain experience in identifying, analyzing, and resolving complex challenges.',
+        
       },
       {
         title: 'Internal Hackathons',
         tags: ['Events'],
         desc: 'Regular internal hackathons with curated problem statements. A safe space to experiment, fail fast, and iterate.',
-        cta: 'View Challenges →',
+      
       },
     ],
   },
@@ -35,22 +35,22 @@ const zones = [
     label: 'Sharpen & Grow',
     cards: [
       {
-        title: 'Mock Interviews',
-        tags: ['Prep'],
-        desc: 'Practice technical interviews with structured feedback. Covers DSA, system design, and behavioral rounds.',
-        cta: 'Practice Now →',
+        title: 'Core CS Subjects',
+        tags: ['Fundamentals'],
+        desc: 'Master the fundamentals — Operating Systems, DBMS, Computer Networks, and OOP. The theory that powers every system and underpins every interview.',
+        
       },
       {
         title: 'System Design',
         tags: ['Advanced'],
         desc: 'Learn to architect scalable systems. From database design to distributed architectures — think beyond CRUD.',
-        cta: 'Dive Deeper →',
+      
       },
       {
         title: 'DSA / Competitive Programming',
-        tags: ['Weekly'],
+        tags: ['fortnightly/monthly'],
         desc: 'Structured CP training for juniors. Weekly contests, upsolving sessions, and curated problem sets aligned with placement prep.',
-        cta: 'Start Solving →',
+        
       },
     ],
   },
@@ -143,8 +143,9 @@ function ActivitiesSection() {
     cards.forEach((card, i) => {
       const cp = relPos(card, zone);
       const tx = cp.l + cp.w / 2;
-      // End path above the card's float range (10px float + 5px buffer)
-      const ty = cp.t - 15;
+      // End the path right on the card's top endpoint ring so the line +
+      // flowing dot visibly connect into the card.
+      const ty = cp.t;
       const dy = ty - sy;
 
       // Cubic bezier — fans out smoothly
@@ -171,7 +172,7 @@ function ActivitiesSection() {
         el: dot, path, len: pLen,
         prog: (i / cards.length) * 0.80 + 0.05,
         spd: 0.0013 + Math.random() * 0.0009,
-        maxProg: 0.95,
+        maxProg: 1,
       });
 
       // Hover effects

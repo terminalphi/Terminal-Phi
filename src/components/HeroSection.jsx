@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { proceedToJoin } from '../auth';
 import './HeroSection.css';
 
 /* ─── Gold streak + firework burst ─── */
@@ -214,6 +216,7 @@ function createBlackHole(canvas, originX, originY, callbacks) {
 }
 
 function HeroSection() {
+  const navigate = useNavigate();
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
   const scrollRef = useRef(null);
@@ -421,13 +424,12 @@ function HeroSection() {
           </div>
 
           <div className="hero__cta-group">
-            <button onClick={() => window.location.href='/activities'} className="hero__cta-primary">
-              EXPLORE ACTIVITIES
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <button onClick={() => proceedToJoin(navigate)} className="hero__cta-primary hero__cta-primary--lg">
+              JOIN US
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17l9.2-9.2M17 17V7.8H7.8" />
               </svg>
             </button>
-            <button onClick={() => window.location.href='/about_us'} className="hero__cta-secondary">Learn More</button>
           </div>
         </div>
 

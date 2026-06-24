@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { getCurrentUser, onAuthChange, logoutUser } from '../auth';
 import './PillNav.css';
+
+const userName = (user) =>
+  user?.user_metadata?.full_name ||
+  user?.user_metadata?.name ||
+  (user?.email ? user.email.split('@')[0] : 'there');
+
+const userAvatar = (user) =>
+  user?.user_metadata?.avatar_url || user?.user_metadata?.picture || '';
 
 const PillNav = ({
   items,
@@ -15,10 +24,42 @@ const PillNav = ({
   initialLoadAnimation = true
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const activeHref = location.pathname;
+
+  // "Login" just authenticates and returns to /home (no redirect to the form)
+  const handleLogin = () => navigate('/signin');
   const resolvedPillTextColor = pillTextColor ?? '#e8e8e8';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+
+  // Track auth state — show the user icon once signed in
+  useEffect(() => {
+    let mounted = true;
+    getCurrentUser().then((u) => { if (mounted) setUser(u); }).catch(() => {});
+    const sub = onAuthChange((u) => setUser(u));
+    return () => { mounted = false; sub?.unsubscribe?.(); };
+  }, []);
+
+  // Close the user dropdown on outside click
+  useEffect(() => {
+    const onDoc = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
+
+  const handleSignOut = async () => {
+    await logoutUser();
+    setUser(null);
+    setUserMenuOpen(false);
+  };
   const circleRefs = useRef([]);
   const tlRefs = useRef([]);
   const activeTweenRefs = useRef([]);
@@ -251,12 +292,39 @@ const PillNav = ({
           </ul>
         </div>
 
-        {/* Right: Join Us button & Mobile Toggle */}
+        {/* Right: Login / User menu & Mobile Toggle */}
         <div className="pill-nav-actions">
-          <Link to="/join_us" className={`pill-join-btn desktop-only ${activeHref === '/join_us' ? 'is-active' : ''}`}>
-            Join Us
-          </Link>
-          
+          {user ? (
+            <div className="pill-user desktop-only" ref={userMenuRef}>
+              <button
+                type="button"
+                className="pill-user-icon"
+                onClick={() => setUserMenuOpen((o) => !o)}
+                aria-label="Account"
+                aria-expanded={userMenuOpen}
+              >
+                {userAvatar(user) ? (
+                  <img src={userAvatar(user)} alt="" referrerPolicy="no-referrer" />
+                ) : (
+                  <span>{userName(user).charAt(0).toUpperCase()}</span>
+                )}
+              </button>
+              {userMenuOpen && (
+                <div className="pill-user-menu">
+                  <div className="pill-user-welcome">Welcome, {userName(user)}</div>
+                  <div className="pill-user-email">{user.email}</div>
+                  <button type="button" className="pill-user-signout" onClick={handleSignOut}>
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button type="button" onClick={handleLogin} className="pill-join-btn desktop-only">
+              Login
+            </button>
+          )}
+
           <button
             className="mobile-menu-button mobile-only"
             onClick={toggleMobileMenu}
@@ -301,19 +369,30 @@ const PillNav = ({
               )}
             </li>
           ))}
-          <li key="join-us-mobile">
-             <Link
-                to="/join_us"
-                className={`mobile-menu-join${activeHref === '/join_us' ? ' is-active' : ''}`}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  const menu = mobileMenuRef.current;
-                  if (menu) gsap.set(menu, { visibility: 'hidden', opacity: 0 });
-                }}
-              >
-                Join Us
-             </Link>
-          </li>
+          {user ? (
+            <li key="user-mobile" className="mobile-menu-user">
+              <div className="pill-user-welcome">Welcome, {userName(user)}</div>
+              <div className="pill-user-email">{user.email}</div>
+              <button type="button" className="pill-user-signout" onClick={handleSignOut}>
+                Sign out
+              </button>
+            </li>
+          ) : (
+            <li key="login-mobile">
+               <button
+                  type="button"
+                  className="mobile-menu-join"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    const menu = mobileMenuRef.current;
+                    if (menu) gsap.set(menu, { visibility: 'hidden', opacity: 0 });
+                    handleLogin();
+                  }}
+                >
+                  Login
+               </button>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

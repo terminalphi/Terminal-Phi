@@ -38,6 +38,21 @@
   transition: filter 0.3s ease;
 }
 
+/* Frozen still used for the downloaded card — no url() SVG filter so it
+   renders inside html-to-image, and the face stays clearly visible. */
+.reflective-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.2) scaleX(-1);
+  filter: saturate(var(--saturation, 0)) contrast(112%) brightness(106%);
+  z-index: 0;
+  opacity: 0.95;
+}
+
 .reflective-noise {
   position: absolute;
   inset: 0;
@@ -123,6 +138,29 @@
 
 .status-icon {
   opacity: 0.8;
+}
+
+.rc-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.rc-prompt {
+  color: #f2d785;
+}
+
+.rc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(212, 175, 55, 0.18);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #f2d785;
 }
 
 .card-body {

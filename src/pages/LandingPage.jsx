@@ -39,22 +39,31 @@ function LandingPage() {
     };
   }, [phase]);
 
-  // Typewriter effect
+  // Typewriter effect — starts shortly after the logo has faded in, so the
+  // intro → logo → text sequence reads as one continuous, coherent flow.
   useEffect(() => {
     if (phase !== 'logo') return;
 
     let i = 0;
-    const interval = setInterval(() => {
-      if (i < fullText.length) {
-        setTypedText(fullText.slice(0, i + 1));
-        i++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => setPhase('ready'), 600);
-      }
-    }, 60);
+    let interval;
+    let readyTimer;
+    const startDelay = setTimeout(() => {
+      interval = setInterval(() => {
+        if (i < fullText.length) {
+          setTypedText(fullText.slice(0, i + 1));
+          i++;
+        } else {
+          clearInterval(interval);
+          readyTimer = setTimeout(() => setPhase('ready'), 500);
+        }
+      }, 55);
+    }, 450);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(startDelay);
+      clearInterval(interval);
+      clearTimeout(readyTimer);
+    };
   }, [phase]);
 
   // Cursor blink
@@ -66,7 +75,7 @@ function LandingPage() {
   }, []);
 
   const handleEnter = () => {
-    navigate('/signin');
+    navigate('/home');
   };
 
   const handleSkipVideo = () => {
@@ -96,7 +105,7 @@ function LandingPage() {
             playsInline
             preload="auto"
           >
-            <source src="/logo_animation_reversed.mp4" type="video/mp4" />
+            <source src="/logo_animation_reversed.webm" type="video/webm" />
           </video>
           <button
             className="landing__skip"

@@ -5,7 +5,6 @@ export const NAV_ITEMS = [
   { label: 'Activities', href: '/activities' },
   { label: 'Events', href: '/events' },
   { label: 'Team', href: '/team' },
-  { label: 'Contact', href: '#contact' },
 ];
 
 export const NAV_LOGO = '/terminal_phi_logo.svg';
