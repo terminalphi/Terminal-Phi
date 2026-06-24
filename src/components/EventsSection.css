@@ -14,13 +14,26 @@
 }
 
 .events__timeline-line {
+  /* Replaced by the OrbCanvas — kept for mobile fallback */
+  display: none;
+}
+
+/* Orb canvas column — sits in the centre of the timeline */
+.events__orb-col {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--border-subtle) 10%, var(--border-subtle) 90%, transparent);
   transform: translateX(-50%);
+  width: 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.events__orb-canvas {
+  display: block;
+  width: 80px;
+  height: 100%;
 }
 
 /* Row */

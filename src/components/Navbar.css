@@ -71,46 +71,60 @@
   color: var(--accent);
 }
 
-/* Nav Links */
+/* Nav Links — pill container */
 .navbar__links {
   display: flex;
   align-items: center;
-  gap: var(--space-xl);
+  gap: var(--space-xs);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 4px;
 }
 
 .navbar__link {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--text-secondary);
   background: none;
   border: none;
   cursor: pointer;
-  transition: color var(--transition-fast);
-  padding: var(--space-xs) 0;
+  transition: all var(--transition-fast);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
   position: relative;
+  /* z-index needed for layoutId element to sit behind */
+  z-index: 1;
 }
 
-.navbar__link::after {
-  content: '';
+.navbar__link-label {
+  position: relative;
+  z-index: 2;
+}
+
+.navbar__link-pill {
   position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--accent);
-  transition: width var(--transition-normal);
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  z-index: 0;
 }
 
-.navbar__link:hover,
-.navbar__link--active {
+.navbar__link:hover {
   color: var(--text-primary);
 }
 
-.navbar__link:hover::after,
-.navbar__link--active::after {
-  width: 100%;
+.navbar__link--active {
+  color: var(--bg-primary);
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.navbar__link--active:hover {
+  background: var(--accent-bright);
+  color: var(--bg-primary);
 }
 
 /* Actions */

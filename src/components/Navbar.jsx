@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import './Navbar.css';
 
 function Navbar() {
@@ -7,6 +8,7 @@ function Navbar() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoveredPath, setHoveredPath] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,11 +51,37 @@ function Navbar() {
         </a>
 
         {/* Desktop Nav */}
-        <div className="navbar__links">
-          <button className={`navbar__link ${isActive('/about_us') ? 'navbar__link--active' : ''}`} onClick={() => handleNav('/about_us')}>ABOUT</button>
-          <button className={`navbar__link ${isActive('/activities') ? 'navbar__link--active' : ''}`} onClick={() => handleNav('/activities')}>ACTIVITIES</button>
-          <button className={`navbar__link ${isActive('/events') ? 'navbar__link--active' : ''}`} onClick={() => handleNav('/events')}>EVENTS</button>
-          <button className="navbar__link" onClick={() => handleNav('#contact')}>CONTACT</button>
+        <div className="navbar__links" onMouseLeave={() => setHoveredPath(null)}>
+          {[
+            { path: '/about_us', label: 'ABOUT' },
+            { path: '/activities', label: 'ACTIVITIES' },
+            { path: '/events', label: 'EVENTS' },
+            { path: '/team', label: 'TEAM' },
+            { path: '#contact', label: 'CONTACT' },
+          ].map(({ path, label }) => {
+            const active = isActive(path);
+            const isHovered = hoveredPath === path;
+            return (
+              <button
+                key={path}
+                className={`navbar__link ${active ? 'navbar__link--active' : ''} ${isHovered ? 'navbar__link--hovered' : ''}`}
+                onClick={() => handleNav(path)}
+                onMouseEnter={() => setHoveredPath(path)}
+              >
+                {isHovered && (
+                  <motion.div
+                    layoutId="pill-nav"
+                    className="navbar__link-pill"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="navbar__link-label">{label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Actions */}
@@ -78,6 +106,7 @@ function Navbar() {
         <button className="navbar__mobile-link" onClick={() => handleNav('/about_us')}>ABOUT</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('/activities')}>ACTIVITIES</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('/events')}>EVENTS</button>
+        <button className="navbar__mobile-link" onClick={() => handleNav('/team')}>TEAM</button>
         <button className="navbar__mobile-link" onClick={() => handleNav('#contact')}>CONTACT</button>
         <button className="navbar__mobile-join" onClick={() => handleNav('/join_us')}>Join Us</button>
       </div>

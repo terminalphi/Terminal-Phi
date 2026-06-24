@@ -43,7 +43,7 @@ const zones = [
       },
       {
         title: 'DSA / Competitive Programming',
-        tags: ['Juniors', 'Weekly'],
+        tags: ['Weekly'],
         desc: 'Structured CP training for juniors. Weekly contests, upsolving sessions, and curated problem sets aligned with placement prep.',
       },
     ],
@@ -137,7 +137,8 @@ function ActivitiesSection() {
     cards.forEach((card, i) => {
       const cp = relPos(card, zone);
       const tx = cp.l + cp.w / 2;
-      const ty = cp.t;
+      // End path above the card's float range (10px float + 5px buffer)
+      const ty = cp.t - 15;
       const dy = ty - sy;
 
       // Cubic bezier — fans out smoothly
@@ -155,30 +156,22 @@ function ActivitiesSection() {
       });
       svg.appendChild(path);
 
-      // Hollow endpoint ring at card top
-      const ring = svgEl('circle', {
-        cx: tx, cy: ty, r: 3.5,
-        fill: 'none', stroke: C.END, 'stroke-width': '1.5',
-      });
-      svg.appendChild(ring);
-
-      // Flowing animated dot
+      // Flowing animated dot — clamped so it stops before path end
       const dot = svgEl('circle', { cx: tx, cy: ty, r: 3, fill: C.DOT });
       svg.appendChild(dot);
 
       const pLen = path.getTotalLength();
       dotsRef.current.push({
         el: dot, path, len: pLen,
-        prog: (i / cards.length) * 0.85 + 0.05,
+        prog: (i / cards.length) * 0.80 + 0.05,
         spd: 0.0013 + Math.random() * 0.0009,
+        maxProg: 0.95,
       });
 
       // Hover effects
       card.addEventListener('mouseenter', () => {
         path.setAttribute('stroke', C.LINE_H);
         path.setAttribute('stroke-width', '1.8');
-        ring.setAttribute('stroke', C.END_H);
-        ring.setAttribute('fill', C.END_H);
         dot.setAttribute('fill', C.DOT_H);
         dot.setAttribute('r', '4.5');
       });
@@ -186,8 +179,6 @@ function ActivitiesSection() {
       card.addEventListener('mouseleave', () => {
         path.setAttribute('stroke', C.LINE);
         path.setAttribute('stroke-width', '1.2');
-        ring.setAttribute('stroke', C.END);
-        ring.setAttribute('fill', 'none');
         dot.setAttribute('fill', C.DOT);
         dot.setAttribute('r', '3');
       });
@@ -197,7 +188,7 @@ function ActivitiesSection() {
   /* Animation loop */
   const tick = useCallback(() => {
     for (const d of dotsRef.current) {
-      d.prog = (d.prog + d.spd) % 1;
+      d.prog = (d.prog + d.spd) % (d.maxProg ?? 1);
       const pt = d.path.getPointAtLength(d.prog * d.len);
       d.el.setAttribute('cx', pt.x);
       d.el.setAttribute('cy', pt.y);
@@ -269,7 +260,11 @@ function ActivitiesSection() {
               {/* Cards row */}
               <div className="act-cards-row">
                 {zone.cards.map((card, cardIdx) => (
-                  <div className="act-card" key={cardIdx}>
+                  <div
+                    className="act-card"
+                    key={cardIdx}
+                    style={{ '--float-delay': `${(zoneIdx * 3 + cardIdx) * 0.4}s` }}
+                  >
                     <h3 className="act-card__title">{card.title}</h3>
                     <div className="act-card__tags">
                       {card.tags.map((tag, i) => (
