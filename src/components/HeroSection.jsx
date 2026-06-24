@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import './HeroSection.css';
 
 /* ─── Gold streak + firework burst ─── */
-function launchStreak(canvas, originX, originY) {
+function launchStreak(canvas, originX, originY, callbacks) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
@@ -12,7 +12,6 @@ function launchStreak(canvas, originX, originY) {
   const targetY = H * 0.25;
   const streakLen = 35;
   let currentY = originY;
-  let streakAlpha = 1;
   let phase = 'streak'; // streak → burst → fade
   const particles = [];
   let rafId;
@@ -20,10 +19,10 @@ function launchStreak(canvas, originX, originY) {
   const COLORS = [
     '#d4af37', '#f2d785', '#e5c07b',
     '#ffbd2e', '#c9a227', '#fff8dc',
-    '#ff5f57', '#28c840', '#61afef',
   ];
 
   function spawnBurst(bx, by) {
+    if (callbacks && callbacks.onExplode) callbacks.onExplode();
     // Main burst
     for (let i = 0; i < 50; i++) {
       const angle = (Math.PI * 2 * i) / 50 + (Math.random() - 0.5) * 0.5;
@@ -60,10 +59,8 @@ function launchStreak(canvas, originX, originY) {
     ctx.clearRect(0, 0, W, H);
 
     if (phase === 'streak') {
-      // Move streak upward
       currentY -= 12;
 
-      // Draw the slim gold streak (a thin glowing line)
       const grad = ctx.createLinearGradient(originX, currentY, originX, currentY + streakLen);
       grad.addColorStop(0, 'rgba(212, 175, 55, 1)');
       grad.addColorStop(0.5, 'rgba(242, 215, 133, 0.8)');
@@ -77,7 +74,6 @@ function launchStreak(canvas, originX, originY) {
       ctx.lineTo(originX, currentY + streakLen);
       ctx.stroke();
 
-      // Glow around the tip
       ctx.globalAlpha = 0.4;
       ctx.beginPath();
       ctx.arc(originX, currentY, 4, 0, Math.PI * 2);
@@ -85,7 +81,6 @@ function launchStreak(canvas, originX, originY) {
       ctx.fill();
       ctx.globalAlpha = 1;
 
-      // Tiny trail particles
       if (Math.random() > 0.3) {
         particles.push({
           x: originX + (Math.random() - 0.5) * 4,
@@ -100,14 +95,12 @@ function launchStreak(canvas, originX, originY) {
         });
       }
 
-      // When streak reaches target, explode
       if (currentY <= targetY) {
         phase = 'burst';
         spawnBurst(originX, currentY);
       }
     }
 
-    // Draw all particles
     let alive = phase === 'streak';
     for (const p of particles) {
       if (p.alpha <= 0) continue;
@@ -125,7 +118,6 @@ function launchStreak(canvas, originX, originY) {
       ctx.fillStyle = p.color;
       ctx.fill();
 
-      // Glow
       ctx.globalAlpha = Math.max(0, p.alpha * 0.25);
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
@@ -146,6 +138,81 @@ function launchStreak(canvas, originX, originY) {
   return () => cancelAnimationFrame(rafId);
 }
 
+/* ─── Black Hole Animation ─── */
+function createBlackHole(canvas, originX, originY, callbacks) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+  
+  let radius = 0;
+  const maxRadius = 12;
+  const particles = [];
+  let rafId;
+  let frames = 0;
+
+  const GOLD_COLORS = ['#d4af37', '#f2d785', '#e5c07b', '#ffffff'];
+
+  for (let i = 0; i < 70; i++) {
+    particles.push({
+      angle: Math.random() * Math.PI * 2,
+      distance: Math.random() * 180 + 20,
+      speed: 0.03 + Math.random() * 0.04,
+      size: 0.8 + Math.random() * 1.5,
+      color: GOLD_COLORS[Math.floor(Math.random() * GOLD_COLORS.length)]
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    frames++;
+
+    if (frames < 30) {
+      radius += (maxRadius - radius) * 0.15; // Ease out
+    } else if (frames > 120) {
+      radius -= radius * 0.2; // Shrink quickly
+    }
+
+    // Draw event horizon (the black hole)
+    ctx.beginPath();
+    ctx.arc(originX, originY, Math.max(0, radius), 0, Math.PI * 2);
+    ctx.fillStyle = '#050505';
+    ctx.shadowColor = '#d4af37';
+    ctx.shadowBlur = radius > 5 ? radius * 2.5 : 0;
+    ctx.fill();
+    ctx.shadowBlur = 0; // reset
+
+    // Draw accretion disk particles
+    for (const p of particles) {
+      p.angle += p.speed;
+      
+      // Suck in if black hole is active
+      if (frames > 10 && frames < 120) {
+        p.distance -= 2 + p.speed * 40;
+      }
+      
+      if (p.distance > radius * 0.8) {
+        const px = originX + Math.cos(p.angle) * p.distance;
+        const py = originY + Math.sin(p.angle) * p.distance;
+        ctx.beginPath();
+        ctx.arc(px, py, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      }
+    }
+
+    if (frames > 140 && radius < 1) {
+      ctx.clearRect(0, 0, W, H);
+      if (callbacks && callbacks.onComplete) callbacks.onComplete();
+      return;
+    }
+
+    rafId = requestAnimationFrame(animate);
+  }
+  
+  animate();
+  return () => cancelAnimationFrame(rafId);
+}
+
 function HeroSection() {
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
@@ -155,8 +222,15 @@ function HeroSection() {
     'A college coding society built for builders, not spectators.'
   );
   const [subtitleSwapped, setSubtitleSwapped] = useState(false);
+  
+  // Easter egg states
   const fireworkFired = useRef(false);
+  const [catClicked, setCatClicked] = useState(false);
+  const [showCat, setShowCat] = useState(false);
+  
   const cleanupRef = useRef(null);
+  const subtitleTimeoutRef = useRef(null);
+  const catSpriteRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 200);
@@ -194,46 +268,119 @@ function HeroSection() {
     const originX = eRect.left - sRect.left + eRect.width / 2;
     const originY = eRect.top - sRect.top;
 
-    // Launch the gold streak → firework
-    cleanupRef.current = launchStreak(canvas, originX, originY);
-
     // Visual feedback on scroll indicator
     scrollEl.classList.add('hero__scroll--fired');
 
-    // Animate the scroll line shrinking then bouncing back
-    gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
-      height: 0,
-      duration: 0.2,
-      ease: 'power2.in',
-      onComplete: () => {
-        gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
-          height: 40,
-          duration: 0.8,
-          ease: 'elastic.out(1, 0.4)',
-        });
-      },
-    });
-
-    // Swap subtitle
+    // Swap subtitle based on cat state
     setSubtitleSwapped(true);
-    setSubtitleText('you clicked. we noticed. welcome to the club. 🚀');
+    
+    if (catClicked && showCat && catSpriteRef.current) {
+      // THE CAT IS HERE! Spawn the Black Hole
+      cleanupRef.current?.();
+      cleanupRef.current = createBlackHole(canvas, originX, originY);
 
-    setTimeout(() => {
+      setSubtitleText('Curious soul? But curiosity killed the cat.');
+
+      // Animate cat getting sucked into the black hole!
+      gsap.to(catSpriteRef.current, {
+        y: "+=40", // Move it 40px down perfectly into the center of the scroll indicator
+        scale: 0,
+        rotation: 720,
+        duration: 1,
+        ease: 'power3.in',
+        delay: 0.3, // wait for black hole to form slightly
+        onComplete: () => setShowCat(false)
+      });
+      
+      // eslint-disable-next-line no-console
+      console.log('%c 🕳️ Cat consumed by singularity! ', 'background: #000; color: #9d4edd; font-size: 14px; font-weight: bold;');
+
+      // Still do the scroll line animation
+      gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
+        height: 0, duration: 0.2, ease: 'power2.in',
+        onComplete: () => {
+          gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
+            height: 40, duration: 0.8, ease: 'elastic.out(1, 0.4)', delay: 1.5 // Wait for black hole to finish
+          });
+        },
+      });
+
+    } else {
+      // Normal Firework
+      cleanupRef.current?.();
+      cleanupRef.current = launchStreak(canvas, originX, originY);
+      
+      setSubtitleText('Curious soul?');
+      
+      // Animate the scroll line
+      gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
+        height: 0, duration: 0.2, ease: 'power2.in',
+        onComplete: () => {
+          gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
+            height: 40, duration: 0.8, ease: 'elastic.out(1, 0.4)',
+          });
+        },
+      });
+    }
+
+    clearTimeout(subtitleTimeoutRef.current);
+    subtitleTimeoutRef.current = setTimeout(() => {
       setSubtitleSwapped(true);
       setSubtitleText('A college coding society built for builders, not spectators.');
       setTimeout(() => setSubtitleSwapped(false), 600);
-    }, 4000);
+      fireworkFired.current = false; // Reset the ability to trigger it again
+    }, 4500);
 
-    // Console easter egg
-    // eslint-disable-next-line no-console
-    console.log(
-      '%c 🎆 you found the firework! ',
-      'background: #d4af37; color: #050505; font-size: 14px; padding: 4px 12px; border-radius: 4px; font-weight: bold;'
-    );
-  }, []);
+  }, [catClicked, showCat]);
+
+  /* Handle "cat" word click */
+  const handleCatClick = useCallback(() => {
+    if (catClicked) return;
+    setCatClicked(true);
+    setShowCat(true);
+
+    // Wait for DOM to render the cat sprite, then animate
+    setTimeout(() => {
+      const sprite = catSpriteRef.current;
+      const scrollEl = scrollRef.current;
+      if (!sprite || !scrollEl) return;
+
+      const spriteRect = sprite.getBoundingClientRect();
+      const scrollRect = scrollEl.getBoundingClientRect();
+      
+      // Calculate delta to move exactly above the scroll indicator
+      const destX = scrollRect.left + scrollRect.width / 2 - (spriteRect.left + spriteRect.width / 2);
+      const destY = scrollRect.top - spriteRect.top - 40;
+
+      const tl = gsap.timeline();
+      
+      // Phase 1: Pop out
+      tl.fromTo(sprite, 
+        { scale: 0, y: 0, opacity: 1, rotation: 0, x: 0 },
+        { scale: 2.5, y: -40, duration: 0.5, ease: 'back.out(1.5)' }
+      );
+
+      // Phase 2: Panic shake
+      tl.to(sprite, { 
+        rotation: 15, duration: 0.1, yoyo: true, repeat: 3 
+      }, "+=0.1");
+
+      // Phase 3: Walk/Hop to the firework detonator
+      tl.to(sprite, { 
+        x: destX, 
+        y: destY, 
+        duration: 1.5, 
+        ease: 'power1.inOut' 
+      }, "+=0.2");
+
+    }, 0);
+  }, [catClicked]);
 
   useEffect(() => {
-    return () => cleanupRef.current?.();
+    return () => {
+      cleanupRef.current?.();
+      clearTimeout(subtitleTimeoutRef.current);
+    };
   }, []);
 
   return (
@@ -242,7 +389,7 @@ function HeroSection() {
       <div className="hero__orb hero__orb--1" />
       <div className="hero__orb hero__orb--2" />
 
-      {/* Firework canvas */}
+      {/* Firework / BlackHole canvas */}
       <canvas className="hero__firework-canvas" ref={canvasRef} />
 
       <div className="hero__content container">
@@ -263,7 +410,14 @@ function HeroSection() {
             <span className="hero__terminal-dots">
               <span /><span /><span />
             </span>
-            <span className="hero__terminal-text">~/terminal-phi $ <span className="hero__terminal-cmd">cat mission.txt</span></span>
+            <span className="hero__terminal-text">
+              ~/terminal-phi $ <span className="hero__terminal-cmd">
+                <span className="hero__terminal-cmd-cat" onClick={handleCatClick}>
+                  cat
+                  {showCat && <span className="hero__cat-sprite" ref={catSpriteRef}>🐱</span>}
+                </span> mission.txt
+              </span>
+            </span>
           </div>
 
           <div className="hero__cta-group">

@@ -207,6 +207,7 @@
 .pill-join-btn:hover,
 .pill-join-btn.is-active {
   background: var(--accent-bright, #f2d785);
+  color: var(--bg-primary, #050505) !important;
   box-shadow: 0 0 20px var(--accent-glow, rgba(212, 175, 55, 0.4));
   transform: translateY(-1px);
 }

@@ -167,6 +167,29 @@
   color: var(--accent);
 }
 
+.hero__terminal-cmd-cat {
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.hero__terminal-cmd-cat:hover {
+  color: #ff5f57;
+  text-shadow: 0 0 8px rgba(255, 95, 87, 0.4);
+}
+
+.hero__cat-sprite {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 20;
+  will-change: transform, opacity, filter;
+}
+
 /* CTAs */
 .hero__cta-group {
   display: flex;
