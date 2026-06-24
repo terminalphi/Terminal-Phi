@@ -15,16 +15,19 @@ const zones = [
         title: 'Project Building',
         tags: ['Core', 'Hands-on'],
         desc: 'Build real-world projects from scratch. From full-stack web apps to ML pipelines — ship production-grade code, not toy examples.',
+        cta: 'Start Building →',
       },
       {
         title: 'Hackathon Participation & Help',
         tags: ['Core', 'Mentorship'],
         desc: 'Get support for external hackathons — team formation, mentorship, idea brainstorming, and post-hackathon retrospectives.',
+        cta: 'Get Support →',
       },
       {
         title: 'Internal Hackathons',
         tags: ['Events'],
         desc: 'Regular internal hackathons with curated problem statements. A safe space to experiment, fail fast, and iterate.',
+        cta: 'View Challenges →',
       },
     ],
   },
@@ -35,16 +38,19 @@ const zones = [
         title: 'Mock Interviews',
         tags: ['Prep'],
         desc: 'Practice technical interviews with structured feedback. Covers DSA, system design, and behavioral rounds.',
+        cta: 'Practice Now →',
       },
       {
         title: 'System Design',
         tags: ['Advanced'],
         desc: 'Learn to architect scalable systems. From database design to distributed architectures — think beyond CRUD.',
+        cta: 'Dive Deeper →',
       },
       {
         title: 'DSA / Competitive Programming',
         tags: ['Weekly'],
         desc: 'Structured CP training for juniors. Weekly contests, upsolving sessions, and curated problem sets aligned with placement prep.',
+        cta: 'Start Solving →',
       },
     ],
   },
@@ -273,7 +279,7 @@ function ActivitiesSection() {
                     </div>
                     <p className="act-card__desc">{card.desc}</p>
                     <button className="act-card__link">
-                      Explore ↗
+                      {card.cta}
                     </button>
                   </div>
                 ))}

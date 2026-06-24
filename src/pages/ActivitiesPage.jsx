@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
+import PillNav from '../components/PillNav';
+import { NAV_ITEMS, NAV_LOGO, NAV_LOGO_ALT } from '../components/navConfig';
 import ActivitiesSection from '../components/ActivitiesSection';
 import Footer from '../components/Footer';
 import './MainSite.css';
@@ -15,7 +16,7 @@ function ActivitiesPage() {
 
   return (
     <div className={`main-site ${loaded ? 'main-site--loaded' : ''}`}>
-      <Navbar />
+      <PillNav logo={NAV_LOGO} logoAlt={NAV_LOGO_ALT} items={NAV_ITEMS} />
       <div style={{ paddingTop: '100px' }}>
         <ActivitiesSection />
       </div>
