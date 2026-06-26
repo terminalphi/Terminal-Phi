@@ -364,13 +364,14 @@ img, video {
    ============================================ */
 :root {
   --kg-line: rgba(212, 175, 55, 0.45);
-  --kg-card-bg: #f7f2e4;
-  --kg-card-bg-hover: #fbf7ec;
-  --kg-card-border: rgba(212, 175, 55, 0.35);
-  --kg-card-border-hover: rgba(212, 175, 55, 0.75);
-  --kg-ink: #17150f;
-  --kg-ink-soft: #5f5847;
-  --kg-gold-deep: #8a6d1f;
+  /* translucent frosted-dark cards so the background shows through */
+  --kg-card-bg: rgba(22, 20, 14, 0.5);
+  --kg-card-bg-hover: rgba(32, 28, 18, 0.62);
+  --kg-card-border: rgba(212, 175, 55, 0.28);
+  --kg-card-border-hover: rgba(212, 175, 55, 0.7);
+  --kg-ink: #ece8df;
+  --kg-ink-soft: #b8b1a2;
+  --kg-gold-deep: #e3c069;
 }
 
 .kgraph__head {
@@ -472,6 +473,8 @@ img, video {
   flex-direction: column;
   padding: var(--space-xl);
   background: var(--kg-card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--kg-card-border);
   border-radius: var(--radius-sm);
   opacity: 0;

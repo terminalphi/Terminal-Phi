@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { getDeviceTier, CANVAS_FPS } from '../deviceTier';
 import './EventsSection.css';
 
 const events = [
@@ -82,7 +83,19 @@ function OrbCanvas({ height, nodeYs }) {
       };
     });
 
-    function draw() {
+    // Cap the redraw rate on weaker hardware. Orb motion is advanced by a
+    // frame-scale factor (relative to 60fps) so the orbs travel at the same
+    // visual speed regardless of the throttled frame rate.
+    const fpsCap = CANVAS_FPS[getDeviceTier()];
+    const minInterval = fpsCap > 0 ? 1000 / fpsCap : 0;
+    let lastDraw = 0;
+
+    function draw(t) {
+      rafRef.current = requestAnimationFrame(draw);
+      if (minInterval && t - lastDraw < minInterval) return;
+      const frameScale = lastDraw ? Math.min((t - lastDraw) / (1000 / 60), 4) : 1;
+      lastDraw = t;
+
       ctx.clearRect(0, 0, W, height);
 
       // Draw the vertical line segments between nodes
@@ -129,7 +142,7 @@ function OrbCanvas({ height, nodeYs }) {
         }
 
         // Advance progress; loop back to start of same segment
-        orb.progress += orb.speed;
+        orb.progress += orb.speed * frameScale;
         if (orb.progress >= 1) {
           orb.progress = 0;
           // Optionally move to next segment
@@ -139,8 +152,6 @@ function OrbCanvas({ height, nodeYs }) {
           orb.speed = 0.0012 + Math.random() * 0.0008;
         }
       }
-
-      rafRef.current = requestAnimationFrame(draw);
     }
 
     rafRef.current = requestAnimationFrame(draw);

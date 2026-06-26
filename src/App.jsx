@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Threads from './components/Threads';
+import { getDeviceTier, THREADS_SETTINGS } from './deviceTier';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/SignInPage';
 import MainSite from './pages/MainSite';
@@ -28,6 +29,9 @@ function AnimatedRoutes() {
 
   // Animated thread background sits behind every page except the landing intro.
   const showThreads = displayLocation.pathname !== '/';
+  // Scale the WebGL background's cost to the device so it stays smooth on
+  // weaker hardware (fewer shader lines, capped DPR + FPS) without going static.
+  const threadSettings = THREADS_SETTINGS[getDeviceTier()];
 
   return (
     <>
@@ -38,6 +42,9 @@ function AnimatedRoutes() {
             amplitude={2}
             distance={0}
             enableMouseInteraction={false}
+            lineCount={threadSettings.lineCount}
+            dprCap={threadSettings.dprCap}
+            maxFps={threadSettings.maxFps}
           />
         </div>
       )}

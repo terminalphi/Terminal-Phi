@@ -45,6 +45,9 @@
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s var(--ease-out);
+  /* sit above the orb-flow animation line so text never gets obscured */
+  position: relative;
+  z-index: 1;
 }
 
 .events__row--visible {
@@ -163,34 +166,37 @@
   max-width: 400px;
 }
 
-/* Responsive */
+/* Responsive — stack each row centered so the centered orb spine still
+   lines up with the nodes and the flow animation stays visible on mobile. */
 @media (max-width: 768px) {
-  .events__timeline-line {
-    left: 20px;
-  }
-
   .events__row {
-    grid-template-columns: auto 1fr;
-    gap: var(--space-md);
-  }
-
-  .events__row-left {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-xs);
   }
 
   .events__divider-vert {
     order: -1;
   }
 
+  .events__row-left {
+    order: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .events__tags {
+    justify-content: center;
+  }
+
   .events__row-right {
-    padding-top: 0;
+    order: 1;
+    text-align: center;
   }
 
-  .events__row-right::before {
-    content: attr(data-title);
-  }
-
-  .events__round-name-mobile {
-    display: block;
+  .events__text {
+    max-width: 88vw;
   }
 }

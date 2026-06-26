@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { getDeviceTier, CANVAS_FPS } from '../deviceTier';
 import './ActivitiesSection.css';
 
 /* ══════════════════════════════════════════════
@@ -100,6 +101,12 @@ function ActivitiesSection() {
   // Store animated dot objects across renders
   const dotsRef = useRef([]);
   const rafRef = useRef(null);
+  // Throttle the dot animation on weaker hardware; dot motion is frame-scaled
+  // (relative to 60fps) so dots travel at the same speed at any frame rate.
+  const lastTickRef = useRef(0);
+  const tickIntervalRef = useRef(
+    CANVAS_FPS[getDeviceTier()] > 0 ? 1000 / CANVAS_FPS[getDeviceTier()] : 0
+  );
 
   /* ── Intersection observer for entrance ── */
   useEffect(() => {
@@ -193,14 +200,21 @@ function ActivitiesSection() {
   }, []);
 
   /* Animation loop */
-  const tick = useCallback(() => {
+  const tick = useCallback((t) => {
+    rafRef.current = requestAnimationFrame(tick);
+    const interval = tickIntervalRef.current;
+    if (interval && t - lastTickRef.current < interval) return;
+    const frameScale = lastTickRef.current
+      ? Math.min((t - lastTickRef.current) / (1000 / 60), 4)
+      : 1;
+    lastTickRef.current = t;
+
     for (const d of dotsRef.current) {
-      d.prog = (d.prog + d.spd) % (d.maxProg ?? 1);
+      d.prog = (d.prog + d.spd * frameScale) % (d.maxProg ?? 1);
       const pt = d.path.getPointAtLength(d.prog * d.len);
       d.el.setAttribute('cx', pt.x);
       d.el.setAttribute('cy', pt.y);
     }
-    rafRef.current = requestAnimationFrame(tick);
   }, []);
 
   /* Boot graph engine once visible */
