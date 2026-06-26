@@ -13,7 +13,7 @@ void main() {
 }
 `;
 
-const fragmentShader = `
+const buildFragmentShader = (lineCount = 40) => `
 precision highp float;
 
 uniform float iTime;
@@ -25,7 +25,7 @@ uniform vec2 uMouse;
 
 #define PI 3.1415926538
 
-const int u_line_count = 40;
+const int u_line_count = ${lineCount};
 const float u_line_width = 7.0;
 const float u_line_blur = 10.0;
 
@@ -120,14 +120,23 @@ void main() {
 }
 `;
 
-const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseInteraction = false, ...rest }) => {
+const Threads = ({
+  color = [1, 1, 1],
+  amplitude = 1,
+  distance = 0,
+  enableMouseInteraction = false,
+  lineCount = 40,
+  dprCap = 2,
+  maxFps = 0,
+  ...rest
+}) => {
   const containerRef = useRef(null);
   const animationFrameId = useRef(0);
 
   // Keep the latest props in a ref so updating them mutates the live shader
   // uniforms instead of tearing down and rebuilding the whole WebGL context.
-  const propsRef = useRef({ color, amplitude, distance, enableMouseInteraction });
-  propsRef.current = { color, amplitude, distance, enableMouseInteraction };
+  const propsRef = useRef({ color, amplitude, distance, enableMouseInteraction, dprCap, maxFps });
+  propsRef.current = { color, amplitude, distance, enableMouseInteraction, dprCap, maxFps };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -143,7 +152,7 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
     const geometry = new Triangle(gl);
     const program = new Program(gl, {
       vertex: vertexShader,
-      fragment: fragmentShader,
+      fragment: buildFragmentShader(lineCount),
       uniforms: {
         iTime: { value: 0 },
         iResolution: {
@@ -165,7 +174,7 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
     const MAX_RENDER_DIM = 1920;
     function resize() {
       const { clientWidth, clientHeight } = container;
-      const baseDpr = Math.min(window.devicePixelRatio || 1, 2);
+      const baseDpr = Math.min(window.devicePixelRatio || 1, propsRef.current.dprCap);
       const longestSide = Math.max(clientWidth, clientHeight) * baseDpr;
       const dpr = longestSide > MAX_RENDER_DIM ? (baseDpr * MAX_RENDER_DIM) / longestSide : baseDpr;
       renderer.dpr = dpr;
@@ -206,11 +215,21 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
     );
     intersectionObserver.observe(container);
 
+    // Cap the render rate on weaker hardware: the rAF loop still runs every
+    // frame (so mouse smoothing stays responsive), but we skip the expensive
+    // shader render until at least one frame-interval has elapsed.
+    let lastRenderTime = 0;
     function update(t) {
       animationFrameId.current = requestAnimationFrame(update);
       if (!isVisible || document.hidden) return;
 
-      const { color, amplitude, distance, enableMouseInteraction } = propsRef.current;
+      const { color, amplitude, distance, enableMouseInteraction, maxFps } = propsRef.current;
+
+      if (maxFps > 0) {
+        const minInterval = 1000 / maxFps;
+        if (t - lastRenderTime < minInterval) return;
+        lastRenderTime = t;
+      }
 
       program.uniforms.uColor.value.set(...color);
       program.uniforms.uAmplitude.value = amplitude;

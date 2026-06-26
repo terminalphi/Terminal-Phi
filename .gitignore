@@ -27,3 +27,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude / Agent files
+.claude/
+.agents/
+

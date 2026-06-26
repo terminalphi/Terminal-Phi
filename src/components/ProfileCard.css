@@ -113,34 +113,6 @@
   color: var(--accent-bright);
 }
 
-.pcard__status {
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-primary);
-  padding: 3px 9px;
-  border-radius: var(--radius-full);
-  background: rgba(10, 10, 10, 0.9);
-  border: 1px solid var(--border-accent);
-  white-space: nowrap;
-}
-
-.pcard__status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px #22c55e;
-}
-
 /* Text */
 .pcard__name {
   font-family: var(--font-display);

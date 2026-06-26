@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { proceedToJoin } from '../auth';
+import { getDeviceTier } from '../deviceTier';
 import './HeroSection.css';
 
 /* ─── Gold streak + firework burst ─── */
@@ -140,78 +142,110 @@ function launchStreak(canvas, originX, originY, callbacks) {
   return () => cancelAnimationFrame(rafId);
 }
 
-/* ─── Black Hole Animation ─── */
-function createBlackHole(canvas, originX, originY, callbacks) {
+/* ─── Full-screen Black Hole that devours the page ─── */
+function runBlackHole(canvas) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
-  
-  let radius = 0;
-  const maxRadius = 12;
-  const particles = [];
+  const cx = W / 2;
+  const cy = H / 2;
+  const maxR = Math.min(W, H) * 0.13;
+
+  const COLORS = ['#d4af37', '#f2d785', '#ffe9a8', '#ffffff', '#e5c07b'];
+  // Scale the particle count to the device so the spiral stays smooth on
+  // weaker hardware without changing how the effect looks.
+  const tier = getDeviceTier();
+  const PARTICLE_COUNT = tier === 'low' ? 120 : tier === 'mid' ? 180 : 260;
+  // Swirling accretion-disk matter, spread out then spiralling inward
+  const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+    angle: Math.random() * Math.PI * 2,
+    dist: maxR * 1.3 + Math.random() * Math.max(W, H) * 0.6,
+    speed: 0.008 + Math.random() * 0.03,
+    size: 0.5 + Math.random() * 2,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    alpha: 0.35 + Math.random() * 0.6,
+  }));
+
   let rafId;
-  let frames = 0;
+  let startTime = null;
+  let lastTime = 0;
+  const GROW_MS = 920; // time to fully open the singularity (was ~55 frames @60fps)
 
-  const GOLD_COLORS = ['#d4af37', '#f2d785', '#e5c07b', '#ffffff'];
+  function animate(now) {
+    if (startTime === null) {
+      startTime = now;
+      lastTime = now;
+    }
+    // Drive everything off elapsed wall-clock time and a 60fps-normalised
+    // frame-scale, so the animation runs at the SAME speed and stays smooth
+    // on 30Hz, 60Hz and 144Hz displays alike (clamped to avoid post-stall jumps).
+    const frameScale = Math.min((now - lastTime) / (1000 / 60), 4);
+    lastTime = now;
 
-  for (let i = 0; i < 70; i++) {
-    particles.push({
-      angle: Math.random() * Math.PI * 2,
-      distance: Math.random() * 180 + 20,
-      speed: 0.03 + Math.random() * 0.04,
-      size: 0.8 + Math.random() * 1.5,
-      color: GOLD_COLORS[Math.floor(Math.random() * GOLD_COLORS.length)]
-    });
-  }
+    const grow = Math.min(1, (now - startTime) / GROW_MS);
+    const r = maxR * grow;
 
-  function animate() {
     ctx.clearRect(0, 0, W, H);
-    frames++;
 
-    if (frames < 30) {
-      radius += (maxRadius - radius) * 0.15; // Ease out
-    } else if (frames > 120) {
-      radius -= radius * 0.2; // Shrink quickly
-    }
-
-    // Draw event horizon (the black hole)
+    // Outer gravitational glow
+    const glow = ctx.createRadialGradient(cx, cy, r * 0.7, cx, cy, r * 3);
+    glow.addColorStop(0, 'rgba(212,175,55,0)');
+    glow.addColorStop(0.45, `rgba(212,175,55,${0.30 * grow})`);
+    glow.addColorStop(0.7, `rgba(255,233,168,${0.18 * grow})`);
+    glow.addColorStop(1, 'rgba(212,175,55,0)');
+    ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.arc(originX, originY, Math.max(0, radius), 0, Math.PI * 2);
-    ctx.fillStyle = '#050505';
-    ctx.shadowColor = '#d4af37';
-    ctx.shadowBlur = radius > 5 ? radius * 2.5 : 0;
+    ctx.arc(cx, cy, r * 3, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowBlur = 0; // reset
 
-    // Draw accretion disk particles
+    // Accretion disk — particles spiral inward on a tilted ellipse
     for (const p of particles) {
-      p.angle += p.speed;
-      
-      // Suck in if black hole is active
-      if (frames > 10 && frames < 120) {
-        p.distance -= 2 + p.speed * 40;
+      const pull = 1 + (r / (p.dist + 1)) * 3;
+      p.angle += p.speed * pull * frameScale;
+      p.dist -= (0.7 + p.speed * 34) * grow * frameScale;
+      if (p.dist < r * 0.82) {
+        p.dist = maxR * 1.3 + Math.random() * Math.max(W, H) * 0.55;
+        p.angle = Math.random() * Math.PI * 2;
       }
-      
-      if (p.distance > radius * 0.8) {
-        const px = originX + Math.cos(p.angle) * p.distance;
-        const py = originY + Math.sin(p.angle) * p.distance;
-        ctx.beginPath();
-        ctx.arc(px, py, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      }
+      const px = cx + Math.cos(p.angle) * p.dist;
+      const py = cy + Math.sin(p.angle) * p.dist * 0.5; // flatten into a disk
+      ctx.globalAlpha = p.alpha * grow;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(px, py, p.size, 0, Math.PI * 2);
+      ctx.fill();
     }
+    ctx.globalAlpha = 1;
 
-    if (frames > 140 && radius < 1) {
-      ctx.clearRect(0, 0, W, H);
-      if (callbacks && callbacks.onComplete) callbacks.onComplete();
-      return;
-    }
+    // Soft halo around the core — drawn as a radial gradient instead of
+    // canvas shadowBlur, which is the single most expensive 2D operation and
+    // was the main cause of the lag (a blurred fill recomputed every frame).
+    const halo = ctx.createRadialGradient(cx, cy, r * 0.6, cx, cy, r * 1.9);
+    halo.addColorStop(0, `rgba(242,215,133,${0.55 * grow})`);
+    halo.addColorStop(0.5, `rgba(242,215,133,${0.18 * grow})`);
+    halo.addColorStop(1, 'rgba(242,215,133,0)');
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 1.9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Event horizon — pure black core
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.max(0, r), 0, Math.PI * 2);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+
+    // Bright photon ring
+    ctx.lineWidth = 2.4;
+    ctx.strokeStyle = `rgba(255,242,205,${0.85 * grow})`;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 1.05, 0, Math.PI * 2);
+    ctx.stroke();
 
     rafId = requestAnimationFrame(animate);
   }
-  
-  animate();
+
+  rafId = requestAnimationFrame(animate);
   return () => cancelAnimationFrame(rafId);
 }
 
@@ -230,10 +264,13 @@ function HeroSection() {
   const fireworkFired = useRef(false);
   const [catClicked, setCatClicked] = useState(false);
   const [showCat, setShowCat] = useState(false);
-  
+  const [blackHole, setBlackHole] = useState('idle'); // 'idle' | 'consuming' | 'done'
+
   const cleanupRef = useRef(null);
   const subtitleTimeoutRef = useRef(null);
   const catSpriteRef = useRef(null);
+  const bhCanvasRef = useRef(null);
+  const bhCleanupRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 200);
@@ -277,54 +314,27 @@ function HeroSection() {
     // Swap subtitle based on cat state
     setSubtitleSwapped(true);
     
-    if (catClicked && showCat && catSpriteRef.current) {
-      // THE CAT IS HERE! Spawn the Black Hole
+    if (catClicked && showCat) {
+      // THE CAT REACHED THE DETONATOR — open a black hole that devours the site.
       cleanupRef.current?.();
-      cleanupRef.current = createBlackHole(canvas, originX, originY);
-
       setSubtitleText('Curious soul? But curiosity killed the cat.');
-
-      // Animate cat getting sucked into the black hole!
-      gsap.to(catSpriteRef.current, {
-        y: "+=40", // Move it 40px down perfectly into the center of the scroll indicator
-        scale: 0,
-        rotation: 720,
-        duration: 1,
-        ease: 'power3.in',
-        delay: 0.3, // wait for black hole to form slightly
-        onComplete: () => setShowCat(false)
-      });
-      
-      // eslint-disable-next-line no-console
-      console.log('%c 🕳️ Cat consumed by singularity! ', 'background: #000; color: #9d4edd; font-size: 14px; font-weight: bold;');
-
-      // Still do the scroll line animation
-      gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
-        height: 0, duration: 0.2, ease: 'power2.in',
-        onComplete: () => {
-          gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
-            height: 40, duration: 0.8, ease: 'elastic.out(1, 0.4)', delay: 1.5 // Wait for black hole to finish
-          });
-        },
-      });
-
-    } else {
-      // Normal Firework
-      cleanupRef.current?.();
-      cleanupRef.current = launchStreak(canvas, originX, originY);
-      
-      setSubtitleText('Curious soul?');
-      
-      // Animate the scroll line
-      gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
-        height: 0, duration: 0.2, ease: 'power2.in',
-        onComplete: () => {
-          gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
-            height: 40, duration: 0.8, ease: 'elastic.out(1, 0.4)',
-          });
-        },
-      });
+      setBlackHole('consuming');
+      return; // no firework, no reset — the page is being eaten
     }
+
+    // Normal firework
+    cleanupRef.current?.();
+    cleanupRef.current = launchStreak(canvas, originX, originY);
+    setSubtitleText('Curious soul?');
+
+    gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
+      height: 0, duration: 0.2, ease: 'power2.in',
+      onComplete: () => {
+        gsap.to(scrollEl.querySelector('.hero__scroll-line'), {
+          height: 40, duration: 0.8, ease: 'elastic.out(1, 0.4)',
+        });
+      },
+    });
 
     clearTimeout(subtitleTimeoutRef.current);
     subtitleTimeoutRef.current = setTimeout(() => {
@@ -335,6 +345,43 @@ function HeroSection() {
     }, 4500);
 
   }, [catClicked, showCat]);
+
+  /* Black-hole sequence: grow the singularity, suck the whole site into it,
+     then reveal the RETRY button once the page is emptied. */
+  useEffect(() => {
+    if (blackHole !== 'consuming') return;
+    const canvas = bhCanvasRef.current;
+    if (!canvas) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    bhCleanupRef.current = runBlackHole(canvas);
+
+    const root = document.getElementById('root');
+    if (root) {
+      gsap.to(root, {
+        scale: 0.02,
+        rotation: 420,
+        opacity: 0,
+        duration: 2.3,
+        ease: 'power2.in',
+        transformOrigin: '50% 50%',
+      });
+    }
+
+    // Once the page has been fully swallowed, kill the spiral animation and
+    // leave only a black screen with the message + retry button.
+    const t = setTimeout(() => {
+      bhCleanupRef.current?.();
+      bhCleanupRef.current = null;
+      setBlackHole('done');
+    }, 2400);
+    return () => {
+      clearTimeout(t);
+      bhCleanupRef.current?.();
+      bhCleanupRef.current = null;
+    };
+  }, [blackHole]);
 
   /* Handle "cat" word click */
   const handleCatClick = useCallback(() => {
@@ -382,6 +429,7 @@ function HeroSection() {
   useEffect(() => {
     return () => {
       cleanupRef.current?.();
+      bhCleanupRef.current?.();
       clearTimeout(subtitleTimeoutRef.current);
     };
   }, []);
@@ -417,7 +465,13 @@ function HeroSection() {
               ~/terminal-phi $ <span className="hero__terminal-cmd">
                 <span className="hero__terminal-cmd-cat" onClick={handleCatClick}>
                   cat
-                  {showCat && <span className="hero__cat-sprite" ref={catSpriteRef}>🐱</span>}
+                  {showCat && (
+                    <pre className="hero__cat-sprite" ref={catSpriteRef} aria-hidden="true">
+                      {' /\\_/\\\n('}
+                      <span className="hero__cat-eyes"> o.o </span>
+                      {')\n > ^ <'}
+                    </pre>
+                  )}
                 </span> mission.txt
               </span>
             </span>
@@ -467,6 +521,25 @@ function HeroSection() {
         <span className="hero__scroll-line" />
         <span className="hero__scroll-text">scroll</span>
       </div>
+
+      {/* Full-screen black hole (rendered to <body> so it survives the page
+          being sucked into it) */}
+      {blackHole !== 'idle' && createPortal(
+        <div className={`blackhole${blackHole === 'done' ? ' blackhole--done' : ''}`}>
+          {blackHole === 'consuming' && (
+            <canvas ref={bhCanvasRef} className="blackhole__canvas" />
+          )}
+          {blackHole === 'done' && (
+            <div className="blackhole__retry">
+              <p className="blackhole__msg">Curious soul? But curiosity killed the cat.</p>
+              <button className="blackhole__btn" onClick={() => window.location.reload()}>
+                RETRY
+              </button>
+            </div>
+          )}
+        </div>,
+        document.body
+      )}
     </section>
   );
 }

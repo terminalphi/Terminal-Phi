@@ -171,6 +171,25 @@
   .footer__grid {
     grid-template-columns: 1fr;
     gap: var(--space-2xl);
+    text-align: center;
+  }
+
+  .footer__brand-logo,
+  .footer__socials {
+    justify-content: center;
+  }
+
+  .footer__brand-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .footer__link-list {
+    align-items: center;
+  }
+
+  .footer__contact-email {
+    word-break: break-word;
   }
 
   .footer__bottom-inner {

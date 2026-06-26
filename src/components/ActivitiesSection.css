@@ -226,22 +226,19 @@
 @media (max-width: 900px) {
   .act-cards-row {
     flex-direction: column;
-    padding-top: 1.5rem;
-    gap: 1rem;
+    /* keep room above the first card for the connector lines/dots */
+    padding-top: 64px;
+    gap: 1.5rem;
   }
 
   .act-card {
     flex: none;
-    /* Keep float on mobile but smaller amplitude */
-    animation: act-float 4s ease-in-out var(--float-delay, 0s) infinite;
+    /* stay static so the SVG connectors + flowing dots remain attached */
   }
 
-  .act-card:hover {
-    animation-play-state: paused;
-  }
-
+  /* Keep the animated connector graph visible on mobile too */
   .act-graph-svg {
-    display: none;
+    display: block;
   }
 }
 

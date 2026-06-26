@@ -49,10 +49,6 @@ function ProfileCard({ name, role, bio, image, initials, github, linkedin, handl
           ) : (
             <span className="pcard__initials">{initials}</span>
           )}
-          <span className="pcard__status">
-            <span className="pcard__status-dot" />
-            {status}
-          </span>
         </div>
 
         <h3 className="pcard__name">{name}</h3>
