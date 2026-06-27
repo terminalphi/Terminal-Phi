@@ -6,7 +6,7 @@ import './TeamSection.css';
    TEAM DATA — edit members here.
    image: URL to custom profile picture. If empty, falls back to initials.
    initials: shown inside the avatar circle.
-   github / linkedin: optional social links.
+   instagram / linkedin: optional social links.
 ══════════════════════════════════════════════ */
 const members = [
   {
@@ -15,7 +15,7 @@ const members = [
     image: '', // e.g. '/team/shreeansh.jpg'
     role: 'President',
     bio: 'The code always runs \n on his machine',
-    github: 'https://github.com/SHREEANSH-AGGARWAL',
+    instagram: 'https://www.instagram.com/shreeansh_main/', // TODO: add Instagram profile URL
     linkedin: 'https://www.linkedin.com/in/aggarwalshreeansh/',
   },
   {
@@ -24,7 +24,7 @@ const members = [
     image: '',
     role: 'Vice President',
     bio: 'Three "tungs" before the sahur.\n no more, no less.',
-    github: '#',
+    instagram: 'https://www.instagram.com/based_aadi/', // TODO: add Instagram profile URL
     linkedin: 'https://www.linkedin.com/in/aadijain101/',
   },
   {
@@ -33,7 +33,7 @@ const members = [
     image: '',
     role: 'General Secretary',
     bio: "I'm passionate about community building and mentorship.",
-    github: '#',
+    instagram: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // TODO: add Instagram profile URL
     linkedin: 'https://www.linkedin.com/in/hardikagrawal3108/',
   },
   
@@ -83,7 +83,7 @@ function TeamSection() {
                 bio={m.bio}
                 image={m.image}
                 initials={m.initials}
-                github={m.github}
+                instagram={m.instagram}
                 linkedin={m.linkedin}
                 handle={handleFor(m.name)}
                 largeBio
