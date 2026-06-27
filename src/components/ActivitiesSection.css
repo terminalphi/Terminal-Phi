@@ -119,7 +119,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  background: var(--bg-tertiary);
+  /* translucent at rest so the animated background shows through; turns
+     fully opaque on hover */
+  background: rgba(17, 17, 17, 0.22);
   position: relative;
   cursor: default;
   /* Cards stay static so the connector lines/dots remain attached to them */
@@ -154,7 +156,7 @@
 
 .act-card:hover {
   border-color: var(--accent);
-  background: var(--bg-card-hover);
+  background: #1c1c1c;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border-accent);
   z-index: 2;
 }

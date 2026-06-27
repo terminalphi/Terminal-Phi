@@ -364,9 +364,10 @@ img, video {
    ============================================ */
 :root {
   --kg-line: rgba(212, 175, 55, 0.45);
-  /* translucent frosted-dark cards so the background shows through */
-  --kg-card-bg: rgba(22, 20, 14, 0.5);
-  --kg-card-bg-hover: rgba(32, 28, 18, 0.62);
+  /* translucent frosted-dark cards so the background shows through;
+     they turn fully opaque on hover */
+  --kg-card-bg: rgba(22, 20, 14, 0.22);
+  --kg-card-bg-hover: rgba(32, 28, 18, 1);
   --kg-card-border: rgba(212, 175, 55, 0.28);
   --kg-card-border-hover: rgba(212, 175, 55, 0.7);
   --kg-ink: #ece8df;
