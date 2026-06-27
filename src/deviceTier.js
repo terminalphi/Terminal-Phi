@@ -18,9 +18,9 @@ export function getDeviceTier() {
 // Per-tier settings for the WebGL Threads background.
 // Fewer shader lines + capped DPR + capped FPS dramatically cut GPU cost.
 export const THREADS_SETTINGS = {
-  high: { lineCount: 40, dprCap: 2, maxFps: 0 },
-  mid: { lineCount: 26, dprCap: 1.25, maxFps: 40 },
-  low: { lineCount: 16, dprCap: 1, maxFps: 30 },
+  high: { lineCount: 30, dprCap: 1.75, maxFps: 60 },
+  mid: { lineCount: 30, dprCap: 1.25, maxFps: 40 },
+  low: { lineCount: 30, dprCap: 1, maxFps: 30 },
 };
 
 // FPS cap for the lighter 2D canvas / rAF loops (events orbs, activity dots).

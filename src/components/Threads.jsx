@@ -66,11 +66,8 @@ float lineFn(vec2 st, float width, float perc, float offset, vec2 mouse, float t
     float time_scaled = time / 10.0 + (mouse.x - 0.5) * 1.0;
     float blur = smoothstep(split_point, split_point + 0.05, st.x) * perc;
 
-    float xnoise = mix(
-        Perlin2D(vec2(time_scaled, st.x + perc) * 2.5),
-        Perlin2D(vec2(time_scaled, st.x + time_scaled) * 3.5) / 1.5,
-        st.x * 0.3
-    );
+    // Simplified noise to improve performance (halves Perlin2D calculations per pixel)
+    float xnoise = Perlin2D(vec2(time_scaled, st.x + perc) * 2.0);
 
     float y = 0.5 + (perc - 0.5) * distance + xnoise / 2.0 * finalAmplitude;
 
@@ -171,7 +168,7 @@ const Threads = ({
     // its cost scales with the number of rendered pixels. Cap the internal render
     // resolution to keep large / high-DPI screens smooth; the effect is soft
     // enough that the downscale is imperceptible.
-    const MAX_RENDER_DIM = 1920;
+    const MAX_RENDER_DIM = 1600;
     function resize() {
       const { clientWidth, clientHeight } = container;
       const baseDpr = Math.min(window.devicePixelRatio || 1, propsRef.current.dprCap);

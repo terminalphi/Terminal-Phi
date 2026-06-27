@@ -39,7 +39,7 @@ function AnimatedRoutes() {
         <div className="app-bg-threads" aria-hidden="true">
           <Threads
             color={[0.831, 0.686, 0.216]}
-            amplitude={2}
+            amplitude={1.2}
             distance={0}
             enableMouseInteraction={false}
             lineCount={threadSettings.lineCount}
@@ -51,8 +51,8 @@ function AnimatedRoutes() {
       <div className={`page-wrapper page-${transitionStage}`}>
         <Routes location={displayLocation}>
           <Route path="/" element={
-            localStorage.getItem('hasVisited') === 'true' 
-              ? <Navigate to="/home" replace /> 
+            localStorage.getItem('hasVisited') === 'true'
+              ? <Navigate to="/home" replace />
               : <LandingPage />
           } />
           <Route path="/signin" element={<SignInPage />} />
