@@ -8,7 +8,7 @@ function Footer() {
           {/* Brand column */}
           <div className="footer__brand">
             <div className="footer__brand-logo">
-              <img src="/terminal_phi_logo.svg" alt="Terminal Phi" className="footer__logo-img" />
+              <img src="https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg" alt="Terminal Phi" className="footer__logo-img" />
               <h2 className="footer__brand-name">Terminal Phi</h2>
             </div>
             <p className="footer__brand-desc">

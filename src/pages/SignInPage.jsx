@@ -58,7 +58,7 @@ function SignInPage() {
 
         {/* Logo */}
         <div className="signin__logo-wrapper">
-          <img src="/terminal_phi_logo.svg" alt="Terminal Phi" className="signin__logo" />
+          <img src="https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg" alt="Terminal Phi" className="signin__logo" />
         </div>
 
         {/* Title */}

@@ -519,7 +519,7 @@ function HeroSection() {
       {/* Scroll indicator — click to launch */}
       <div className="hero__scroll" ref={scrollRef} onClick={handleClick}>
         <span className="hero__scroll-line" />
-        <span className="hero__scroll-text">scroll</span>
+        <span className="hero__scroll-text">              </span>
       </div>
 
       {/* Full-screen black hole (rendered to <body> so it survives the page

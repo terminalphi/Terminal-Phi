@@ -7,5 +7,5 @@ export const NAV_ITEMS = [
   { label: 'Team', href: '/team' },
 ];
 
-export const NAV_LOGO = '/terminal_phi_logo.svg';
+export const NAV_LOGO = 'https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg';
 export const NAV_LOGO_ALT = 'Terminal Phi';

@@ -43,7 +43,7 @@ function Navbar() {
             playsInline
             preload="auto"
           >
-            <source src="/logo_navbar.webm" type="video/webm" />
+            <source src="https://res.cloudinary.com/dtsgjbckj/video/upload/v1782580961/logo_navbar_tbxkbz.webm" type="video/webm" />
           </video>
           <span className="navbar__logo-text">
             <span className="navbar__logo-prompt">&gt; </span>terminal phi
