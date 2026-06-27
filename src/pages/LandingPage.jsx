@@ -10,6 +10,13 @@ function LandingPage() {
   const videoRef = useRef(null);
   const fullText = '> initializing terminal_phi...';
 
+  // If user has visited before, skip intro and go straight to home
+  useEffect(() => {
+    if (localStorage.getItem('hasVisited') === 'true') {
+      navigate('/home');
+    }
+  }, [navigate]);
+
   // Video end handler
   useEffect(() => {
     const video = videoRef.current;
@@ -75,6 +82,7 @@ function LandingPage() {
   }, []);
 
   const handleEnter = () => {
+    localStorage.setItem('hasVisited', 'true');
     navigate('/home');
   };
 

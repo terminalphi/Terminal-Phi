@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Threads from './components/Threads';
 import { getDeviceTier, THREADS_SETTINGS } from './deviceTier';
 import LandingPage from './pages/LandingPage';
@@ -50,7 +50,11 @@ function AnimatedRoutes() {
       )}
       <div className={`page-wrapper page-${transitionStage}`}>
         <Routes location={displayLocation}>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={
+            localStorage.getItem('hasVisited') === 'true' 
+              ? <Navigate to="/home" replace /> 
+              : <LandingPage />
+          } />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/home" element={<MainSite />} />
           <Route path="/about_us" element={<AboutPage />} />
