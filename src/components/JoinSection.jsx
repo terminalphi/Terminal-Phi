@@ -33,14 +33,19 @@ function JoinSection() {
     return () => observer.disconnect();
   }, []);
 
-  // If the user is authenticated, prefill + lock their email
+  // If the user is authenticated, prefill + lock their email and prefill name
   useEffect(() => {
     let mounted = true;
     getCurrentUser()
       .then((user) => {
-        if (mounted && user?.email) {
-          setFormData((prev) => ({ ...prev, email: user.email }));
-          setEmailLocked(true);
+        if (mounted && user) {
+          const fullName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+          setFormData((prev) => ({ 
+            ...prev, 
+            email: user.email || prev.email,
+            name: fullName || prev.name
+          }));
+          if (user.email) setEmailLocked(true);
         }
       })
       .catch(() => {});
