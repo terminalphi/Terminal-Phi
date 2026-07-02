@@ -2,12 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { getDeviceTier, CANVAS_FPS } from '../deviceTier';
 import './ActivitiesSection.css';
 
-/* ══════════════════════════════════════════════
-   DATA — Two graph zones, each with its own
-   category label and set of cards.
-   Add / remove cards freely; the SVG engine
-   adapts automatically.
-══════════════════════════════════════════════ */
+// Two graph zones, each with its own category label and set of cards.
+// The SVG engine adapts automatically as cards are added or removed.
 const zones = [
   {
     label: 'Build & Ship',
@@ -57,10 +53,7 @@ const zones = [
   },
 ];
 
-/* ══════════════════════════════════════════════
-   COLOUR TOKENS for SVG graph engine
-   Mapped to Terminal Phi design system
-══════════════════════════════════════════════ */
+// Colour tokens for the SVG graph engine.
 const C = {
   LINE:   'rgba(212,175,55,0.3)',    // default connector stroke
   LINE_H: '#d4af37',                 // hover connector stroke
@@ -71,14 +64,12 @@ const C = {
   SRC:    '#d4af37',                 // source dot at category node
 };
 
-/* ── SVG helper ── */
 function svgEl(tag, attrs) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   return el;
 }
 
-/* Position of el relative to ancestor */
 function relPos(el, ancestor) {
   const eR = el.getBoundingClientRect();
   const aR = ancestor.getBoundingClientRect();
@@ -92,13 +83,9 @@ function relPos(el, ancestor) {
   };
 }
 
-/* ══════════════════════════════════════════════
-   COMPONENT
-══════════════════════════════════════════════ */
 function ActivitiesSection() {
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
-  // Store animated dot objects across renders
   const dotsRef = useRef([]);
   const rafRef = useRef(null);
   // Throttle the dot animation on weaker hardware; dot motion is frame-scaled
@@ -108,7 +95,6 @@ function ActivitiesSection() {
     CANVAS_FPS[getDeviceTier()] > 0 ? 1000 / CANVAS_FPS[getDeviceTier()] : 0
   );
 
-  /* ── Intersection observer for entrance ── */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -124,7 +110,6 @@ function ActivitiesSection() {
     };
   }, []);
 
-  /* ── SVG graph engine ── */
   const initZone = useCallback((id) => {
     const zone = document.getElementById(`act-zone-${id}`);
     const svg = document.getElementById(`act-svg-${id}`);
@@ -132,10 +117,8 @@ function ActivitiesSection() {
     const cards = zone ? zone.querySelectorAll('.act-card') : [];
     if (!zone || !svg || !node || !cards.length) return;
 
-    // Clear previous drawing
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    // Size SVG to cover the zone
     svg.setAttribute('width', zone.offsetWidth);
     svg.setAttribute('height', zone.offsetHeight);
 
@@ -144,7 +127,6 @@ function ActivitiesSection() {
     const sx = np.l + np.w / 2;
     const sy = np.b;
 
-    // Filled dot at source
     svg.appendChild(svgEl('circle', { cx: sx, cy: sy, r: 4, fill: C.SRC }));
 
     cards.forEach((card, i) => {
@@ -155,12 +137,10 @@ function ActivitiesSection() {
       const ty = cp.t;
       const dy = ty - sy;
 
-      // Cubic bezier — fans out smoothly
       const c1y = sy + dy * 0.6;
       const c2y = ty - dy * 0.2;
       const d = `M${sx},${sy} C${sx},${c1y} ${tx},${c2y} ${tx},${ty}`;
 
-      // Connector line
       const path = svgEl('path', {
         d,
         fill: 'none',
@@ -182,7 +162,6 @@ function ActivitiesSection() {
         maxProg: 1,
       });
 
-      // Hover effects
       card.addEventListener('mouseenter', () => {
         path.setAttribute('stroke', C.LINE_H);
         path.setAttribute('stroke-width', '1.8');
@@ -199,7 +178,6 @@ function ActivitiesSection() {
     });
   }, []);
 
-  /* Animation loop */
   const tick = useCallback((t) => {
     rafRef.current = requestAnimationFrame(tick);
     const interval = tickIntervalRef.current;
@@ -217,11 +195,10 @@ function ActivitiesSection() {
     }
   }, []);
 
-  /* Boot graph engine once visible */
   useEffect(() => {
     if (!visible) return;
 
-    // Small delay so DOM has laid out
+    // Small delay so the DOM has laid out before measuring positions.
     const timer = setTimeout(() => {
       dotsRef.current = [];
       for (let i = 0; i < zones.length; i++) initZone(i);
@@ -234,7 +211,6 @@ function ActivitiesSection() {
     };
   }, [visible, initZone, tick]);
 
-  /* Redraw on resize */
   useEffect(() => {
     let rsTimer;
     const handleResize = () => {
@@ -257,14 +233,12 @@ function ActivitiesSection() {
   return (
     <section className="activities section" id="activities" ref={sectionRef}>
       <div className="container">
-        {/* Hero Header */}
         <div className="act-hero">
           <p className="act-hero__eye"></p>
           <h2 className="act-hero__h1">Our Activities</h2>
           <p className="act-hero__sub">What our members can expect to learn and experience</p>
         </div>
 
-        {/* Knowledge Graph Zones */}
         {zones.map((zone, zoneIdx) => (
           <div className="act-graph-zone" id={`act-zone-${zoneIdx}`} key={zoneIdx}>
             <svg
@@ -273,12 +247,10 @@ function ActivitiesSection() {
               xmlns="http://www.w3.org/2000/svg"
             />
             <div className="act-graph-content">
-              {/* Category node */}
               <div className="act-cat-node" id={`act-node-${zoneIdx}`}>
                 {zone.label}
               </div>
 
-              {/* Cards row */}
               <div className="act-cards-row">
                 {zone.cards.map((card, cardIdx) => (
                   <div

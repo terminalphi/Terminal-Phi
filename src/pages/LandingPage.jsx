@@ -10,14 +10,12 @@ function LandingPage() {
   const videoRef = useRef(null);
   const fullText = '> initializing terminal_phi...';
 
-  // If user has visited before, skip intro and go straight to home
   useEffect(() => {
     if (localStorage.getItem('hasVisited') === 'true') {
       navigate('/home');
     }
   }, [navigate]);
 
-  // Video end handler
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -27,7 +25,6 @@ function LandingPage() {
     };
 
     const handleError = () => {
-      // If video fails to load, skip to logo phase
       setPhase('logo');
     };
 
@@ -73,7 +70,6 @@ function LandingPage() {
     };
   }, [phase]);
 
-  // Cursor blink
   useEffect(() => {
     const interval = setInterval(() => {
       setShowCursor(prev => !prev);
@@ -92,18 +88,14 @@ function LandingPage() {
 
   return (
     <div className="landing">
-      {/* Background grid */}
       <div className="landing__grid" />
 
-      {/* Ambient glow orbs */}
       <div className="landing__orb landing__orb--1" />
       <div className="landing__orb landing__orb--2" />
 
-      {/* Scanline effect */}
       <div className="landing__scanline" />
 
       <div className="landing__content">
-        {/* Video Phase */}
         <div className={`landing__video-wrapper ${phase !== 'video' ? 'landing__video-wrapper--hidden' : ''}`}>
           <video
             ref={videoRef}
@@ -124,9 +116,7 @@ function LandingPage() {
           </button>
         </div>
 
-        {/* Logo & Text Phase */}
         <div className={`landing__main ${phase !== 'video' ? 'landing__main--visible' : ''}`}>
-          {/* SVG Logo */}
           <div className="landing__logo-container">
             <img
               src="https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg"
@@ -135,13 +125,11 @@ function LandingPage() {
             />
           </div>
 
-          {/* Typewriter Text */}
           <div className="landing__terminal-line">
             <span className="landing__typed">{typedText}</span>
             <span className={`landing__cursor ${showCursor ? '' : 'landing__cursor--hidden'}`}>█</span>
           </div>
 
-          {/* Enter Button */}
           <button
             className={`landing__enter-btn ${phase === 'ready' ? 'landing__enter-btn--visible' : ''}`}
             onClick={handleEnter}

@@ -44,7 +44,6 @@ const PillNav = ({
     return () => { mounted = false; sub?.unsubscribe?.(); };
   }, []);
 
-  // Close the user dropdown on outside click
   useEffect(() => {
     const onDoc = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -226,7 +225,6 @@ const PillNav = ({
   return (
     <nav className={`pill-nav-container ${scrolled ? 'pill-nav-container--scrolled' : ''} ${className}`} aria-label="Primary" style={cssVars}>
       <div className="pill-nav-inner">
-        {/* Left: Logo */}
         <Link
           className="pill-logo"
           to="/home"
@@ -249,7 +247,6 @@ const PillNav = ({
           </span>
         </Link>
 
-        {/* Center: Pill Nav Items */}
         <div className="pill-nav-items desktop-only" ref={navItemsRef}>
           <ul className="pill-list" role="menubar">
             {items.map((item, i) => (
@@ -292,7 +289,6 @@ const PillNav = ({
           </ul>
         </div>
 
-        {/* Right: Login / User menu & Mobile Toggle */}
         <div className="pill-nav-actions">
           {user ? (
             <div className="pill-user desktop-only" ref={userMenuRef}>
@@ -337,7 +333,6 @@ const PillNav = ({
         </div>
       </div>
 
-      {/* Mobile Menu Popover */}
       <div className="mobile-menu-popover mobile-only" ref={mobileMenuRef} style={cssVars}>
         <ul className="mobile-menu-list">
           {items.map((item, i) => (

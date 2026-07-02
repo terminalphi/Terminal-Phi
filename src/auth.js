@@ -1,18 +1,12 @@
-// ============================================================================
-// OAUTH INTEGRATION FILE (Supabase + Direct Google Sign-In)
-// ============================================================================
-// This uses @react-oauth/google for the login popup (so users see
-// "Terminal Phi" instead of "dyvfqm...supabase.co"), then hands the
-// Google ID token to Supabase to create a proper session.
-// ============================================================================
+// OAuth integration (Supabase + direct Google sign-in). The Google popup is
+// branded "Terminal Phi" via @react-oauth/google; its ID token is then handed
+// to Supabase to create a proper session.
 
 import { createClient } from '@supabase/supabase-js';
 
-// Read Supabase project URL and anon key from environment (.env)
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Initialize Supabase Client only when configured
 export const supabase = (supabaseUrl && supabaseAnonKey)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;

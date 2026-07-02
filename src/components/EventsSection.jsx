@@ -41,20 +41,11 @@ const events = [
   },
 ];
 
-/* ══════════════════════════════════════════════
-   OrbCanvas — orbs travel point-to-point between
-   node Y positions, not across the full height.
-
-   The canvas owns its geometry: it sizes its drawing
-   buffer to its own rendered size (scaled by the device
-   pixel ratio) and reads the node positions live from
-   the DOM each frame. This keeps the drawing buffer and
-   the CSS-displayed size in lockstep — a mismatch would
-   squash the line/orbs and misalign them with the nodes.
-
-   containerRef: the timeline element (canvas fills it).
-   nodeRefs:     ref holding the node span elements.
-══════════════════════════════════════════════ */
+// OrbCanvas — orbs travel point-to-point between node Y positions, not across
+// the full height. The canvas sizes its drawing buffer to its own rendered size
+// (scaled by device pixel ratio) and reads node positions live from the DOM each
+// frame, keeping the buffer and CSS-displayed size in lockstep so the line/orbs
+// stay aligned with the nodes.
 function OrbCanvas({ containerRef, nodeRefs }) {
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
@@ -108,7 +99,6 @@ function OrbCanvas({ containerRef, nodeRefs }) {
     const ORB_COUNT = 3;
     const orbs = Array.from({ length: ORB_COUNT }, (_, i) => ({
       segIndex: i,
-      // stagger start position within the segment
       progress: i / ORB_COUNT,
       speed: 0.0012 + Math.random() * 0.0008, // progress per frame (0–1 range)
       radius: 5 + Math.random() * 5,
@@ -132,7 +122,6 @@ function OrbCanvas({ containerRef, nodeRefs }) {
       ctx.clearRect(0, 0, W, displayH);
       if (segments.length < 1) return;
 
-      // Draw the vertical line segments between nodes
       for (const seg of segments) {
         const lineGrad = ctx.createLinearGradient(0, seg.from, 0, seg.to);
         lineGrad.addColorStop(0,   'rgba(212,175,55,0.12)');
@@ -146,7 +135,6 @@ function OrbCanvas({ containerRef, nodeRefs }) {
         ctx.stroke();
       }
 
-      // Draw and advance each orb within its segment
       for (const orb of orbs) {
         const seg = segments[orb.segIndex];
         if (!seg) continue;
@@ -158,7 +146,6 @@ function OrbCanvas({ containerRef, nodeRefs }) {
         const a = orb.alpha * edgeFade;
 
         if (a > 0.01) {
-          // Glowing orb
           const grad = ctx.createRadialGradient(cx, y, 0, cx, y, orb.radius);
           grad.addColorStop(0,   `rgba(255,235,150,${a})`);
           grad.addColorStop(0.5, `rgba(212,175,55,${a * 0.6})`);
@@ -169,18 +156,15 @@ function OrbCanvas({ containerRef, nodeRefs }) {
           ctx.fillStyle = grad;
           ctx.fill();
 
-          // Outer glow
           ctx.beginPath();
           ctx.arc(cx, y, orb.radius * 1.8, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(212,175,55,${a * 0.08})`;
           ctx.fill();
         }
 
-        // Advance progress; loop back to start of same segment
         orb.progress += orb.speed * frameScale;
         if (orb.progress >= 1) {
           orb.progress = 0;
-          // Optionally move to next segment
           orb.segIndex = (orb.segIndex + 1) % segments.length;
           orb.radius = 5 + Math.random() * 5;
           orb.alpha = 0.22 + Math.random() * 0.18;
@@ -205,9 +189,6 @@ function OrbCanvas({ containerRef, nodeRefs }) {
   );
 }
 
-/* ══════════════════════════════════════════════
-   EventsSection
-══════════════════════════════════════════════ */
 function EventsSection() {
   const sectionRef = useRef(null);
   const timelineRef = useRef(null);
@@ -232,8 +213,6 @@ function EventsSection() {
         <h2 className="section-title">Events &amp; Hackathons</h2>
 
         <div className="events__timeline" ref={timelineRef}>
-
-          {/* Orb-flow column */}
           <div className="events__orb-col">
             <OrbCanvas containerRef={timelineRef} nodeRefs={nodeRefs} />
           </div>
@@ -257,7 +236,6 @@ function EventsSection() {
               </div>
 
               <div className="events__divider-vert">
-                {/* ref captured for Y-position measurement */}
                 <span
                   ref={(el) => (nodeRefs.current[idx] = el)}
                   className={`events__node ${event.status === 'recurring' ? 'events__node--active' : ''}`}

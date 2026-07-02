@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Threads from './components/Threads';
 import { getDeviceTier, THREADS_SETTINGS } from './deviceTier';
 import LandingPage from './pages/LandingPage';

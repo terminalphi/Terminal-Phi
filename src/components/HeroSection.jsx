@@ -6,7 +6,7 @@ import { proceedToJoin } from '../auth';
 import { getDeviceTier } from '../deviceTier';
 import './HeroSection.css';
 
-/* ─── Gold streak + firework burst ─── */
+// Gold streak that rises from the click origin and explodes into a firework.
 function launchStreak(canvas, originX, originY, callbacks) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
@@ -27,7 +27,6 @@ function launchStreak(canvas, originX, originY, callbacks) {
 
   function spawnBurst(bx, by) {
     if (callbacks && callbacks.onExplode) callbacks.onExplode();
-    // Main burst
     for (let i = 0; i < 50; i++) {
       const angle = (Math.PI * 2 * i) / 50 + (Math.random() - 0.5) * 0.5;
       const speed = 1.5 + Math.random() * 5;
@@ -42,7 +41,6 @@ function launchStreak(canvas, originX, originY, callbacks) {
         gravity: 0.05 + Math.random() * 0.04,
       });
     }
-    // Sparkle ring
     for (let i = 0; i < 15; i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = 0.5 + Math.random() * 2;
@@ -142,7 +140,7 @@ function launchStreak(canvas, originX, originY, callbacks) {
   return () => cancelAnimationFrame(rafId);
 }
 
-/* ─── Full-screen Black Hole that devours the page ─── */
+// Full-screen black hole that devours the page (the cat easter egg).
 function runBlackHole(canvas) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
@@ -187,7 +185,6 @@ function runBlackHole(canvas) {
 
     ctx.clearRect(0, 0, W, H);
 
-    // Outer gravitational glow
     const glow = ctx.createRadialGradient(cx, cy, r * 0.7, cx, cy, r * 3);
     glow.addColorStop(0, 'rgba(212,175,55,0)');
     glow.addColorStop(0.45, `rgba(212,175,55,${0.30 * grow})`);
@@ -235,7 +232,6 @@ function runBlackHole(canvas) {
     ctx.fillStyle = '#000';
     ctx.fill();
 
-    // Bright photon ring
     ctx.lineWidth = 2.4;
     ctx.strokeStyle = `rgba(255,242,205,${0.85 * grow})`;
     ctx.beginPath();
@@ -259,8 +255,7 @@ function HeroSection() {
     'A tech society built for builders, not spectators.'
   );
   const [subtitleSwapped, setSubtitleSwapped] = useState(false);
-  
-  // Easter egg states
+
   const fireworkFired = useRef(false);
   const [catClicked, setCatClicked] = useState(false);
   const [showCat, setShowCat] = useState(false);
@@ -277,7 +272,6 @@ function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  /* Resize canvas to match section */
   useEffect(() => {
     const canvas = canvasRef.current;
     const section = sectionRef.current;
@@ -292,7 +286,6 @@ function HeroSection() {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  /* Fire on click of the scroll indicator */
   const handleClick = useCallback(() => {
     if (fireworkFired.current) return;
     fireworkFired.current = true;
@@ -302,16 +295,13 @@ function HeroSection() {
     const section = sectionRef.current;
     if (!canvas || !scrollEl || !section) return;
 
-    // Get origin — bottom of the scroll line
+    // Origin — bottom of the scroll line.
     const sRect = section.getBoundingClientRect();
     const eRect = scrollEl.getBoundingClientRect();
     const originX = eRect.left - sRect.left + eRect.width / 2;
     const originY = eRect.top - sRect.top;
 
-    // Visual feedback on scroll indicator
     scrollEl.classList.add('hero__scroll--fired');
-
-    // Swap subtitle based on cat state
     setSubtitleSwapped(true);
     
     if (catClicked && showCat) {
@@ -322,7 +312,6 @@ function HeroSection() {
       return; // no firework, no reset — the page is being eaten
     }
 
-    // Normal firework
     cleanupRef.current?.();
     cleanupRef.current = launchStreak(canvas, originX, originY);
     setSubtitleText('Curious soul?');
@@ -341,7 +330,7 @@ function HeroSection() {
       setSubtitleSwapped(true);
       setSubtitleText('A college coding society built for builders, not spectators.');
       setTimeout(() => setSubtitleSwapped(false), 600);
-      fireworkFired.current = false; // Reset the ability to trigger it again
+      fireworkFired.current = false;
     }, 4500);
 
   }, [catClicked, showCat]);
@@ -383,7 +372,6 @@ function HeroSection() {
     };
   }, [blackHole]);
 
-  /* Handle "cat" word click */
   const handleCatClick = useCallback(() => {
     if (catClicked) return;
     setCatClicked(true);
@@ -440,7 +428,6 @@ function HeroSection() {
       <div className="hero__orb hero__orb--1" />
       <div className="hero__orb hero__orb--2" />
 
-      {/* Firework / BlackHole canvas */}
       <canvas className="hero__firework-canvas" ref={canvasRef} />
 
       <div className="hero__content container">
@@ -487,7 +474,6 @@ function HeroSection() {
           </div>
         </div>
 
-        {/* Decorative code block */}
         <div className={`hero__code-block ${visible ? 'hero__code-block--visible' : ''}`}>
           <div className="hero__code-header">
             <span className="hero__code-dots">
@@ -516,7 +502,6 @@ function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator — click to launch */}
       <div className="hero__scroll" ref={scrollRef} onClick={handleClick}>
         <span className="hero__scroll-line" />
         <span className="hero__scroll-text">              </span>
