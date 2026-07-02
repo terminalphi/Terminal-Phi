@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getDeviceTier, CANVAS_FPS } from '../deviceTier';
 import './EventsSection.css';
 
@@ -44,44 +44,76 @@ const events = [
 /* ══════════════════════════════════════════════
    OrbCanvas — orbs travel point-to-point between
    node Y positions, not across the full height.
-   nodeYs: array of Y values relative to the canvas.
+
+   The canvas owns its geometry: it sizes its drawing
+   buffer to its own rendered size (scaled by the device
+   pixel ratio) and reads the node positions live from
+   the DOM each frame. This keeps the drawing buffer and
+   the CSS-displayed size in lockstep — a mismatch would
+   squash the line/orbs and misalign them with the nodes.
+
+   containerRef: the timeline element (canvas fills it).
+   nodeRefs:     ref holding the node span elements.
 ══════════════════════════════════════════════ */
-function OrbCanvas({ height, nodeYs }) {
+function OrbCanvas({ containerRef, nodeRefs }) {
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || height <= 0 || nodeYs.length < 2) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
     const W = 80;
-    canvas.width = W;
-    canvas.height = height;
     const cx = W / 2;
     const ctx = canvas.getContext('2d');
 
-    // Build segments: each is {from, to}
-    // Apply a -5px nudge at the third node (index 2) for pixel-perfect alignment
-    const adjustedYs = nodeYs.map((y, i) => i === 2 ? y - 5 : y);
-    const segments = [];
-    for (let i = 0; i < adjustedYs.length - 1; i++) {
-      segments.push({ from: adjustedYs[i], to: adjustedYs[i + 1] });
+    // Size the drawing buffer to the canvas's actual rendered size so 1 canvas
+    // unit maps to 1 CSS pixel. Re-run whenever the timeline resizes.
+    let displayH = 0;
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      displayH = container.getBoundingClientRect().height;
+      canvas.width = W * dpr;
+      canvas.height = displayH * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(container);
+
+    // Read the current node Y centres (relative to the timeline top) and build
+    // the segment list. Recomputed each frame so the line tracks the nodes even
+    // while the entrance animation is still settling them into place.
+    function buildSegments() {
+      const cRect = container.getBoundingClientRect();
+      const ys = nodeRefs.current
+        .filter(Boolean)
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return r.top - cRect.top + r.height / 2;
+        });
+      if (ys.length < 2) return [];
+      // Apply a -5px nudge at the third node (index 2) for pixel-perfect alignment
+      const adjustedYs = ys.map((y, i) => (i === 2 ? y - 5 : y));
+      const segs = [];
+      for (let i = 0; i < adjustedYs.length - 1; i++) {
+        segs.push({ from: adjustedYs[i], to: adjustedYs[i + 1] });
+      }
+      return segs;
     }
 
-    // One orb per segment, staggered along the segment length
-    const ORB_COUNT = 3; // 3 orbs total, distributed across segments
-    const orbs = Array.from({ length: ORB_COUNT }, (_, i) => {
-      const seg = segments[i % segments.length];
-      const segLen = seg.to - seg.from;
-      return {
-        segIndex: i % segments.length,
-        // stagger start position within the segment
-        progress: (i / ORB_COUNT),
-        speed: 0.0012 + Math.random() * 0.0008, // progress per frame (0–1 range)
-        radius: 5 + Math.random() * 5,
-        alpha: 0.22 + Math.random() * 0.18,
-      };
-    });
+    // One orb per segment, staggered along the segment length. The orb count is
+    // fixed to the node count so orbs keep their identity across reflows.
+    const ORB_COUNT = 3;
+    const orbs = Array.from({ length: ORB_COUNT }, (_, i) => ({
+      segIndex: i,
+      // stagger start position within the segment
+      progress: i / ORB_COUNT,
+      speed: 0.0012 + Math.random() * 0.0008, // progress per frame (0–1 range)
+      radius: 5 + Math.random() * 5,
+      alpha: 0.22 + Math.random() * 0.18,
+    }));
 
     // Cap the redraw rate on weaker hardware. Orb motion is advanced by a
     // frame-scale factor (relative to 60fps) so the orbs travel at the same
@@ -96,7 +128,9 @@ function OrbCanvas({ height, nodeYs }) {
       const frameScale = lastDraw ? Math.min((t - lastDraw) / (1000 / 60), 4) : 1;
       lastDraw = t;
 
-      ctx.clearRect(0, 0, W, height);
+      const segments = buildSegments();
+      ctx.clearRect(0, 0, W, displayH);
+      if (segments.length < 1) return;
 
       // Draw the vertical line segments between nodes
       for (const seg of segments) {
@@ -115,6 +149,7 @@ function OrbCanvas({ height, nodeYs }) {
       // Draw and advance each orb within its segment
       for (const orb of orbs) {
         const seg = segments[orb.segIndex];
+        if (!seg) continue;
         const segLen = seg.to - seg.from;
         const y = seg.from + orb.progress * segLen;
 
@@ -157,8 +192,9 @@ function OrbCanvas({ height, nodeYs }) {
     rafRef.current = requestAnimationFrame(draw);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
     };
-  }, [height, nodeYs]);
+  }, [containerRef, nodeRefs]);
 
   return (
     <canvas
@@ -177,8 +213,6 @@ function EventsSection() {
   const timelineRef = useRef(null);
   const nodeRefs = useRef([]);
   const [visible, setVisible] = useState(false);
-  const [timelineHeight, setTimelineHeight] = useState(0);
-  const [nodeYs, setNodeYs] = useState([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -191,33 +225,6 @@ function EventsSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Measure timeline height and node Y positions
-  const measure = useCallback(() => {
-    if (!timelineRef.current) return;
-    const tRect = timelineRef.current.getBoundingClientRect();
-    setTimelineHeight(timelineRef.current.offsetHeight);
-
-    const ys = nodeRefs.current
-      .filter(Boolean)
-      .map((el) => {
-        const r = el.getBoundingClientRect();
-        // Y relative to the top of the timeline container
-        return r.top - tRect.top + r.height / 2;
-      });
-    setNodeYs(ys);
-  }, []);
-
-  useEffect(() => {
-    // Measure after layout settles
-    const t = setTimeout(measure, 200);
-    const ro = new ResizeObserver(measure);
-    if (timelineRef.current) ro.observe(timelineRef.current);
-    return () => {
-      clearTimeout(t);
-      ro.disconnect();
-    };
-  }, [measure, visible]);
-
   return (
     <section className="events section" id="events" ref={sectionRef}>
       <div className="container">
@@ -228,7 +235,7 @@ function EventsSection() {
 
           {/* Orb-flow column */}
           <div className="events__orb-col">
-            <OrbCanvas height={timelineHeight} nodeYs={nodeYs} />
+            <OrbCanvas containerRef={timelineRef} nodeRefs={nodeRefs} />
           </div>
 
           {events.map((event, idx) => (
