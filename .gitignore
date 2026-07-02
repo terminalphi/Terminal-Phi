@@ -32,3 +32,6 @@ dist-ssr
 .claude/
 .agents/
 
+
+# Threads video render scratch
+.threads-frames/
