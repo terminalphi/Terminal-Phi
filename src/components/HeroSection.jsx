@@ -256,7 +256,7 @@ function HeroSection() {
   const scrollRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [subtitleText, setSubtitleText] = useState(
-    'A tech society built for builders, not spectators.'
+    'A college coding society built for builders, not spectators.'
   );
   const [subtitleSwapped, setSubtitleSwapped] = useState(false);
   

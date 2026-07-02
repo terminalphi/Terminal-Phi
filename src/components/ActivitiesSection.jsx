@@ -27,7 +27,7 @@ const zones = [
       {
         title: 'Internal Hackathons',
         tags: ['Events'],
-        desc: 'internal hackathons to create a safe space to experiment, fail fast, and iterate.',
+        desc: 'Regular internal hackathons with curated problem statements. A safe space to experiment, fail fast, and iterate.',
       
       },
     ],
@@ -38,19 +38,19 @@ const zones = [
       {
         title: 'Core CS Subjects',
         tags: ['Fundamentals'],
-        desc: 'Learn and Master the fundamentals — Operating Systems, DBMS, Computer Networks, and OOP. Get guidance and material to build your expertise.',
+        desc: 'Master the fundamentals — Operating Systems, DBMS, Computer Networks, and OOP. The theory that powers every system and underpins every interview.',
         
       },
       {
         title: 'System Design',
         tags: ['Advanced'],
-        desc: 'Learn system design with guidance and material to support your learning journey to build scalable systems. Gain exposure to real-world design challenges and best practices.',
+        desc: 'Learn to architect scalable systems. From database design to distributed architectures — think beyond CRUD.',
       
       },
       {
         title: 'DSA / Competitive Programming',
         tags: ['fortnightly/monthly'],
-        desc: 'We aim to foster a healthy competitive environment for sharpening problem solving skills.',
+        desc: 'Structured CP training for juniors. Weekly contests, upsolving sessions, and curated problem sets aligned with placement prep.',
         
       },
     ],
@@ -259,9 +259,9 @@ function ActivitiesSection() {
       <div className="container">
         {/* Hero Header */}
         <div className="act-hero">
-          <p className="act-hero__eye"></p>
+          <p className="act-hero__eye">curated · structured · hands-on</p>
           <h2 className="act-hero__h1">Our Activities</h2>
-          <p className="act-hero__sub">What our members can expect to learn and experience</p>
+          <p className="act-hero__sub">Curated paths for builders, not spectators</p>
         </div>
 
         {/* Knowledge Graph Zones */}

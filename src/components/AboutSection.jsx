@@ -2,20 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import './AboutSection.css';
 
 const aboutData = [
-  { 
+  {
     title: 'Who We Are',
-    text: 'Terminal Phi is a tech society that aims to bring together passionate developers, problem solvers, and builders. We believe in learning by doing — not just attending lectures. Every member ships real code.',
-    tags: ['General info'],
+    text: 'Terminal Phi is a college coding society that brings together passionate developers, problem solvers, and builders. We believe in learning by doing — not just attending lectures. Every member ships real code.',
+    tags: ['Identity'],
   },
   {
-    title: 'Objectives',
-    text: 'To create a collaborative environment for passionate developers to learn, grow, and build together.',
+    title: 'Our Mission',
+    text: 'To create an environment where members grow into confident engineers through hands-on project building, hackathon exposure, mock interviews, and competitive programming. We bridge the gap between classroom theory and industry reality.',
     tags: ['Purpose'],
   },
   {
     title: 'Who Can Join',
-    text: 'Anyone with a genuine drive to build, learn and contribute to the tech community is welcome to join Terminal Phi. We value passion and dedication over experience.',
-    tags: ['requirements'],
+    text: 'Anyone with a genuine drive to build. We curate for growth-stage developers who want to ship, learn fast, and push each other forward — no prior pedigree required.',
+    tags: ['Membership'],
   },
 ];
 
@@ -47,7 +47,7 @@ function AboutSection() {
         <div className="kgraph__head">
           <span className="section-eyebrow">Who We Are</span>
           <h2 className="section-title">About Terminal Phi</h2>
-          <p className="kgraph__subtitle"></p>
+          <p className="kgraph__subtitle">A coding society built for builders</p>
         </div>
 
         <div className="kgraph__tree">
