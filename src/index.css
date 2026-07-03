@@ -358,7 +358,7 @@ img, video {
 }
 
 /* ============================================
-   Knowledge Graph layout (amsociety-style)
+   Knowledge Graph layout
    Shared by Activities & About sections
    Light "parchment" cards + gold connectors
    ============================================ */
@@ -449,24 +449,6 @@ img, video {
   gap: var(--space-lg);
 }
 
-/* Horizontal "bus" line + per-card drops (desktop only) */
-.kgraph__grid::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 16.66%;
-  right: 16.66%;
-  height: 1px;
-  background: var(--kg-line);
-  /* draws outward from the centre */
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.5s var(--ease-out) 0.7s;
-}
-
-.kgraph--in .kgraph__grid::before {
-  transform: scaleX(1);
-}
 
 .kcard {
   position: relative;
@@ -482,29 +464,6 @@ img, video {
   /* snappy, interactive transitions (hover) — entrance is a keyframe */
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-}
-
-.kcard::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  width: 1px;
-  height: 20px;
-  background: var(--kg-line);
-  /* drop line extends down to each card */
-  transform: translateX(-50%) scaleY(0);
-  transform-origin: top center;
-  transition: transform 0.3s var(--ease-out) 0.95s;
-}
-
-.kgraph--in .kcard::before {
-  transform: translateX(-50%) scaleY(1);
-}
-
-/* Only the first row (3 cards) connects to the bus line */
-.kgraph__grid .kcard:nth-child(n+4)::before {
-  display: none;
 }
 
 .kcard--visible {
@@ -548,9 +507,7 @@ img, video {
 @media (prefers-reduced-motion: reduce) {
   .kgraph__node,
   .kgraph__trunk,
-  .kgraph__grid::before,
-  .kcard,
-  .kcard::before {
+  .kcard {
     transition: none !important;
     animation: none !important;
   }
@@ -561,14 +518,8 @@ img, video {
   .kgraph__trunk {
     transform: scaleY(1) !important;
   }
-  .kgraph__grid::before {
-    transform: scaleX(1) !important;
-  }
   .kcard {
     opacity: 1 !important;
-  }
-  .kcard::before {
-    transform: translateX(-50%) scaleY(1) !important;
   }
 }
 
