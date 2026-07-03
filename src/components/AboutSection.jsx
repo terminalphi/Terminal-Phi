@@ -14,46 +14,46 @@ const aboutData = [
   },
   {
     title: 'Who Can Join',
-    text: 'Those who feel the pull. If you have lain awake with an unfinished idea gnawing at you, if you build because you want to and not because you have to, Terminal Phi is already waiting for you. Inducements fade, hunger does not.',
+    text: 'Those who feel the pull, if you build because you want to and not because you have to, Terminal Phi is waiting for you. Inducements fade, hunger does not.',
     tags: ['Requirements'],
   },
 ];
 
-const GOLD    = 'rgba(212,175,55,0.45)';
+const GOLD = 'rgba(212,175,55,0.45)';
 const BUS_GAP = 24; // px above grid where the horizontal bus line sits
 
 function AboutSection() {
   const sectionRef = useRef(null);
-  const gridRef     = useRef(null);
-  const svgRef      = useRef(null);
-  const cardRefs    = useRef([]);
+  const gridRef = useRef(null);
+  const svgRef = useRef(null);
+  const cardRefs = useRef([]);
   const [visible, setVisible] = useState(false);
 
   /* ── Draw / redraw the SVG overlay ── */
   const draw = useCallback(() => {
-    const svg  = svgRef.current;
+    const svg = svgRef.current;
     const grid = gridRef.current;
     if (!svg || !grid) return;
 
     const gridRect = grid.getBoundingClientRect();
-    const cards    = cardRefs.current.filter(Boolean);
+    const cards = cardRefs.current.filter(Boolean);
     if (!cards.length) return;
 
     // Measure each card's center-x and top-y, relative to the grid
     const positions = cards.map(card => {
       const r = card.getBoundingClientRect();
       return {
-        cx:  r.left - gridRect.left + r.width / 2,
-        top: r.top  - gridRect.top,
+        cx: r.left - gridRect.left + r.width / 2,
+        top: r.top - gridRect.top,
       };
     });
 
     // SVG covers grid area + BUS_GAP above
     const svgW = gridRect.width;
     const svgH = gridRect.height + BUS_GAP;
-    svg.setAttribute('width',   svgW);
-    svg.setAttribute('height',  svgH);
-    svg.style.top  = `-${BUS_GAP}px`;
+    svg.setAttribute('width', svgW);
+    svg.setAttribute('height', svgH);
+    svg.style.top = `-${BUS_GAP}px`;
     svg.style.left = '0';
 
     // y=0 in SVG coords = BUS_GAP px above the grid top = where bus line sits
@@ -76,7 +76,7 @@ function AboutSection() {
 
     // ── Vertical drop lines (one per card, hidden by default) ──
     positions.forEach(({ cx, top }) => {
-      const len  = top + BUS_GAP; // distance from bus to card top
+      const len = top + BUS_GAP; // distance from bus to card top
       const line = document.createElementNS(ns, 'line');
       line.setAttribute('x1', cx);
       line.setAttribute('y1', busY);
