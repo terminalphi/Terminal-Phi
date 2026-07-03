@@ -6,62 +6,53 @@ import './ActivitiesSection.css';
 // The SVG engine adapts automatically as cards are added or removed.
 const zones = [
   {
-    label: 'Build & Ship',
+    label: 'Prior',
     cards: [
       {
         title: 'Project Building',
         tags: ['Core', 'Hands-on'],
-        desc: 'Build real-world projects from scratch and gain exposure to real-world challenges. From full-stack web apps to ML pipelines — ship production-grade code, not toy examples.',
-        
+        desc: 'Real projects, not demonstrations. Tools that didn\'t exist until someone decided they should. We build things that work in the real world - Distributed backends to ML pipelines. Code that ships, not code that sits.',
       },
       {
-        title: 'Real World Problem Solving',
-        tags: ['Core', 'problem solving'],
-        desc: 'Tackle real-world problems and develop practical solutions. Gain experience in identifying, analyzing, and resolving complex challenges.',
-        
+        title: 'Competitive Programming',
+        tags: ['Rigor'],
+        desc: 'The kind of thinking that sharpens everything else, problem-solving isn\'t a skill, it\'s a practice you never finish.',
       },
       {
-        title: 'Internal Hackathons',
-        tags: ['Events'],
-        desc: 'internal hackathons to create a safe space to experiment, fail fast, and iterate.',
-      
+        title: 'Core CS Subjects',
+        tags: ['Fundamentals'],
+        desc: 'Most carry these subjects like debt — owed but never truly paid. Operating Systems, DBMS, OOP , not facts to memorize, but weight worth bearing. We actually pay it.',
       },
     ],
   },
   {
-    label: 'Sharpen & Grow',
+    label: 'Posterior',
     cards: [
       {
-        title: 'Core CS Subjects',
-        tags: ['Fundamentals'],
-        desc: 'Learn and Master the fundamentals — Operating Systems, DBMS, Computer Networks, and OOP. Get guidance and material to build your expertise.',
-        
+        title: 'Open Problems',
+        tags: ['Monthly'],
+        desc: 'Problems don\'t wait for you to feel ready. We put you in front of the real ones - ambiguous, messy, unresolved and trust you to find your way through.',
       },
+
       {
         title: 'System Design',
         tags: ['Advanced'],
-        desc: 'Learn system design with guidance and material to support your learning journey to build scalable systems. Gain exposure to real-world design challenges and best practices.',
-      
-      },
-      {
-        title: 'DSA / Competitive Programming',
-        tags: ['fortnightly/monthly'],
-        desc: 'We aim to foster a healthy competitive environment for sharpening problem solving skills.',
-        
+        desc: 'How do you design something that holds under pressure, at scale, in the hands of strangers waiting to tear it apart? Sit with that question and find an answer to it.',
       },
     ],
   },
 ];
 
+
 // Colour tokens for the SVG graph engine.
 const C = {
-  LINE:   'rgba(212,175,55,0.3)',    // default connector stroke
+  LINE: 'rgba(212,175,55,0.3)',    // default connector stroke
   LINE_H: '#d4af37',                 // hover connector stroke
-  DOT:    'rgba(212,175,55,0.5)',    // flowing dot default
-  DOT_H:  '#f2d785',                 // flowing dot hover
-  END:    'rgba(255,255,255,0.15)',   // endpoint ring default
-  END_H:  '#d4af37',                 // endpoint ring hover
-  SRC:    '#d4af37',                 // source dot at category node
+  DOT: 'rgba(212,175,55,0.5)',    // flowing dot default
+  DOT_H: '#f2d785',                 // flowing dot hover
+  END: 'rgba(255,255,255,0.15)',   // endpoint ring default
+  END_H: '#d4af37',                 // endpoint ring hover
+  SRC: '#d4af37',                 // source dot at category node
 };
 
 function svgEl(tag, attrs) {
