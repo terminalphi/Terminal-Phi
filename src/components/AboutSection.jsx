@@ -2,20 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import './AboutSection.css';
 
 const aboutData = [
-  { 
+  {
     title: 'Who We Are',
-    text: 'Terminal Phi is a tech society that aims to bring together passionate developers, problem solvers, and builders. We believe in learning by doing — not just attending lectures. Every member ships real code.',
-    tags: ['General info'],
+    text: 'Terminal Phi is a society for the deeply obsessed, problem solvers drawn together not by ambition, but by a quieter compulsion to create.',
+    tags: ['General'],
   },
   {
     title: 'Objectives',
-    text: 'To create a collaborative environment for passionate developers to learn, grow, and build together.',
+    text: "We're an independent collective building the tech society we wish existed. No bureaucracy, no gatekeeping.",
     tags: ['Purpose'],
   },
   {
     title: 'Who Can Join',
-    text: 'Anyone with a genuine drive to build, learn and contribute to the tech community is welcome to join Terminal Phi. We value passion and dedication over experience.',
-    tags: ['requirements'],
+    text: 'Those who feel the pull. If you have lain awake with an unfinished idea gnawing at you, if you build because you want to and not because you have to, Terminal Phi is already waiting for you. Inducements fade, hunger does not.',
+    tags: ['Requirements'],
   },
 ];
 
