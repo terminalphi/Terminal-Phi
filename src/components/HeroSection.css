@@ -426,7 +426,7 @@
 .hero__scroll-text {
   font-family: var(--font-mono);
   font-size: 0.6rem;
-  color: var(--text-tertiary);
+  color: white;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   transition: color 0.3s ease, text-shadow 0.3s ease;
