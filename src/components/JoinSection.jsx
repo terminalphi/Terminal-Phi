@@ -14,6 +14,7 @@ function JoinSection() {
   const [submitting, setSubmitting] = useState(false);
   const [emailLocked, setEmailLocked] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', rollNo: '', interest: '', github: '', why: '',
   });
@@ -48,7 +49,11 @@ function JoinSection() {
   }, []);
 
   const handleChange = (field) => (e) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === 'phone') {
+      setPhoneError(/^\d{10}$/.test(value) ? '' : 'Enter a valid 10-digit mobile number');
+    }
   };
 
   const saveToSupabase = async () => {
@@ -82,6 +87,10 @@ function JoinSection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!/^\d{10}$/.test(formData.phone)) {
+      setPhoneError('Enter a valid 10-digit mobile number');
+      return;
+    }
     setSubmitting(true);
     setSubmitStatus('Saving your application...');
 
@@ -149,7 +158,22 @@ function JoinSection() {
                     title={emailLocked ? 'Linked to your signed-in Google account' : undefined}
                     required
                   />
-                  <input className="join__input" type="tel" placeholder="Phone number" value={formData.phone} onChange={handleChange('phone')} required />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <input
+                      className={`join__input${phoneError ? ' join__input--error' : ''}`}
+                      type="tel"
+                      placeholder="Phone number (10 digits)"
+                      value={formData.phone}
+                      onChange={handleChange('phone')}
+                      maxLength={10}
+                      required
+                    />
+                    {phoneError && (
+                      <span style={{ color: '#ff6b6b', fontSize: '0.75rem', paddingLeft: '4px' }}>
+                        {phoneError}
+                      </span>
+                    )}
+                  </div>
                   <input className="join__input" type="text" placeholder="Roll number / Student ID" value={formData.rollNo} onChange={handleChange('rollNo')} required />
                   <input className="join__input" type="text" placeholder="Primary interest (Web, ML, CP, System Design…)" value={formData.interest} onChange={handleChange('interest')} required />
                   <input className="join__input" type="url" placeholder="GitHub / portfolio link (optional)" value={formData.github} onChange={handleChange('github')} />

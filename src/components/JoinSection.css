@@ -158,6 +158,15 @@
   box-shadow: none;
 }
 
+.join__input--error {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.06);
+}
+
+.join__input--error:focus {
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
 /* Submit */
 .join__submit {
   display: flex;
