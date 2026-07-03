@@ -27,7 +27,7 @@ function AnimatedRoutes() {
     }
   }, [location, displayLocation]);
 
-  // Animated thread background sits behind every page except the landing intro.
+
   const showThreads = displayLocation.pathname !== '/';
   // Scale the WebGL background's cost to the device so it stays smooth on
   // weaker hardware (fewer shader lines, capped DPR + FPS) without going static.
