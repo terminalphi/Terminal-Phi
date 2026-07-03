@@ -11,7 +11,7 @@ function Footer() {
               <h2 className="footer__brand-name">Terminal Phi</h2>
             </div>
             <p className="footer__brand-desc">
-              A tech society built for builders.
+              A tech society built for builders, not spectators.
             </p>
             <div className="footer__socials">
               <a href="https://github.com/terminalphi" className="footer__social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">

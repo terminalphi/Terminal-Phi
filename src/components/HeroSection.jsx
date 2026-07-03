@@ -303,11 +303,11 @@ function HeroSection() {
 
     scrollEl.classList.add('hero__scroll--fired');
     setSubtitleSwapped(true);
-    
+
     if (catClicked && showCat) {
       // THE CAT REACHED THE DETONATOR — open a black hole that devours the site.
       cleanupRef.current?.();
-      setSubtitleText('Curious soul? But curiosity killed the cat.');
+      setSubtitleText('Curiosity killed the cat.');
       setBlackHole('consuming');
       return; // no firework, no reset — the page is being eaten
     }
@@ -328,7 +328,7 @@ function HeroSection() {
     clearTimeout(subtitleTimeoutRef.current);
     subtitleTimeoutRef.current = setTimeout(() => {
       setSubtitleSwapped(true);
-      setSubtitleText('A college coding society built for builders, not spectators.');
+      setSubtitleText('A tech society built for builders, not spectators.');
       setTimeout(() => setSubtitleSwapped(false), 600);
       fireworkFired.current = false;
     }, 4500);
@@ -385,30 +385,30 @@ function HeroSection() {
 
       const spriteRect = sprite.getBoundingClientRect();
       const scrollRect = scrollEl.getBoundingClientRect();
-      
+
       // Calculate delta to move exactly above the scroll indicator
       const destX = scrollRect.left + scrollRect.width / 2 - (spriteRect.left + spriteRect.width / 2);
       const destY = scrollRect.top - spriteRect.top - 40;
 
       const tl = gsap.timeline();
-      
+
       // Phase 1: Pop out
-      tl.fromTo(sprite, 
+      tl.fromTo(sprite,
         { scale: 0, y: 0, opacity: 1, rotation: 0, x: 0 },
         { scale: 2.5, y: -40, duration: 0.5, ease: 'back.out(1.5)' }
       );
 
       // Phase 2: Panic shake
-      tl.to(sprite, { 
-        rotation: 15, duration: 0.1, yoyo: true, repeat: 3 
+      tl.to(sprite, {
+        rotation: 15, duration: 0.1, yoyo: true, repeat: 3
       }, "+=0.1");
 
       // Phase 3: Walk/Hop to the firework detonator
-      tl.to(sprite, { 
-        x: destX, 
-        y: destY, 
-        duration: 1.5, 
-        ease: 'power1.inOut' 
+      tl.to(sprite, {
+        x: destX,
+        y: destY,
+        duration: 1.5,
+        ease: 'power1.inOut'
       }, "+=0.2");
 
     }, 0);
@@ -504,7 +504,7 @@ function HeroSection() {
 
       <div className="hero__scroll" ref={scrollRef} onClick={handleClick}>
         <span className="hero__scroll-line" />
-        <span className="hero__scroll-text">              </span>
+        <span className="hero__scroll-text" style={{ color: 'black' }}>No</span>
       </div>
 
       {/* Full-screen black hole (rendered to <body> so it survives the page
@@ -516,7 +516,7 @@ function HeroSection() {
           )}
           {blackHole === 'done' && (
             <div className="blackhole__retry">
-              <p className="blackhole__msg">Curious soul? But curiosity killed the cat.</p>
+              <p className="blackhole__msg">Curiosity killed the cat.</p>
               <button className="blackhole__btn" onClick={() => window.location.reload()}>
                 RETRY
               </button>
