@@ -105,7 +105,7 @@ function LandingPage() {
             playsInline
             preload="auto"
           >
-            <source src="https://res.cloudinary.com/dtsgjbckj/video/upload/v1782581549/logo_animation_reversed_rxeand.webm" type="video/webm" />
+            <source src="https://assets.terminalphi.xyz/text_to_logo.webm" type="video/webm" />
           </video>
           <button
             className="landing__skip"
@@ -119,7 +119,7 @@ function LandingPage() {
         <div className={`landing__main ${phase !== 'video' ? 'landing__main--visible' : ''}`}>
           <div className="landing__logo-container">
             <img
-              src="https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg"
+              src="https://assets.terminalphi.xyz/logo_svg.svg"
               alt="Terminal Phi"
               className="landing__logo"
             />
