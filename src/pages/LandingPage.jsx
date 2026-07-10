@@ -118,11 +118,7 @@ function LandingPage() {
 
         <div className={`landing__main ${phase !== 'video' ? 'landing__main--visible' : ''}`}>
           <div className="landing__logo-container">
-            <img
-              src="https://assets.terminalphi.xyz/logo_svg.svg"
-              alt="Terminal Phi"
-              className="landing__logo"
-            />
+            <div className="landing__logo" role="img" aria-label="Terminal Phi" />
           </div>
 
           <div className="landing__terminal-line">

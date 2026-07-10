@@ -1,0 +1,282 @@
+/* ============================================
+   TERMINAL OVERLAY – Full-screen CLI
+   ============================================ */
+
+/* --- Overlay backdrop ---------------------------------------------------- */
+.terminal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  background: rgba(2, 2, 2, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  /* open / close */
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.98) translateY(8px);
+  transition: opacity 0.35s var(--ease-out),
+              transform 0.35s var(--ease-out),
+              visibility 0s linear 0.35s;
+}
+
+.terminal-overlay--open {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateY(0);
+  transition: opacity 0.35s var(--ease-out),
+              transform 0.35s var(--ease-out),
+              visibility 0s linear 0s;
+}
+
+/* --- CRT scanline sweep (subtle) ---------------------------------------- */
+.terminal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(var(--accent-rgb), 0.018) 2px,
+    rgba(var(--accent-rgb), 0.018) 4px
+  );
+  z-index: 1;
+}
+
+/* --- Title bar ----------------------------------------------------------- */
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+  padding: 0 var(--space-md);
+  background: rgba(12, 12, 12, 0.85);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.terminal-titlebar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: filter var(--transition-fast);
+}
+
+.terminal-dot:hover { filter: brightness(1.4); }
+.terminal-dot--red   { background: #ff5f57; }
+.terminal-dot--yellow{ background: #febc2e; }
+.terminal-dot--green { background: #28c840; }
+
+.terminal-titlebar__title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.terminal-titlebar__shortcut {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+}
+
+/* --- Scrollable output --------------------------------------------------- */
+.terminal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  position: relative;
+  z-index: 2;
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar inside terminal */
+.terminal-body::-webkit-scrollbar { width: 5px; }
+.terminal-body::-webkit-scrollbar-track { background: transparent; }
+.terminal-body::-webkit-scrollbar-thumb {
+  background: var(--accent-dim);
+  border-radius: var(--radius-full);
+}
+
+/* --- Output lines -------------------------------------------------------- */
+.terminal-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  animation: termFadeIn 0.15s var(--ease-out);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.terminal-line--system {
+  color: var(--accent);
+}
+
+.terminal-line--error {
+  color: #ff6b6b;
+}
+
+.terminal-line--success {
+  color: #51cf66;
+}
+
+.terminal-line--dim {
+  color: var(--text-tertiary);
+}
+
+.terminal-line--info {
+  color: #74c0fc;
+}
+
+.terminal-line--html {
+  display: block;
+}
+
+.terminal-line--html a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@keyframes termFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Input row ----------------------------------------------------------- */
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  position: relative;
+  z-index: 2;
+  padding: 0 var(--space-lg) var(--space-md);
+}
+
+.terminal-prompt {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  caret-color: var(--accent);
+  line-height: 1.7;
+  padding: 0;
+  margin: 0;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.terminal-input::placeholder {
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+/* --- Welcome / ASCII banner ---------------------------------------------- */
+.terminal-banner {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  line-height: 1.25;
+  color: var(--accent-dim);
+  white-space: pre;
+  margin-bottom: var(--space-md);
+  animation: termFadeIn 0.4s var(--ease-out);
+  overflow-x: auto;
+}
+
+.terminal-welcome {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+  animation: termFadeIn 0.4s var(--ease-out) 0.1s backwards;
+}
+
+.terminal-welcome strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* --- Autocomplete hint --------------------------------------------------- */
+.terminal-autocomplete {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  margin-bottom: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(18, 18, 18, 0.95);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+  animation: termFadeIn 0.12s var(--ease-out);
+}
+
+.terminal-autocomplete__item {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.terminal-autocomplete__item:hover,
+.terminal-autocomplete__item--active {
+  background: var(--accent-glow);
+  color: var(--accent-bright);
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+@media (max-width: 640px) {
+  .terminal-body {
+    padding: var(--space-md);
+  }
+  .terminal-input-row {
+    padding: 0 var(--space-md) var(--space-sm);
+  }
+  .terminal-banner {
+    font-size: 0.45rem;
+  }
+  .terminal-titlebar__shortcut {
+    display: none;
+  }
+}

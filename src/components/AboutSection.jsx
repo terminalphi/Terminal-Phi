@@ -19,7 +19,7 @@ const aboutData = [
   },
 ];
 
-const GOLD = 'rgba(212,175,55,0.45)';
+const GOLD = 'rgba(var(--accent-rgb), 0.45)';
 const BUS_GAP = 24; // px above grid where the horizontal bus line sits
 
 function AboutSection() {

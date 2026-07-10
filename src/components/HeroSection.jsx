@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { proceedToJoin } from '../auth';
 import { getDeviceTier } from '../deviceTier';
+import { accentRGBA, accentBright, getAccentHex } from '../themeColors';
 import './HeroSection.css';
 
 // Gold streak that rises from the click origin and explodes into a firework.
@@ -21,8 +22,8 @@ function launchStreak(canvas, originX, originY, callbacks) {
   let rafId;
 
   const COLORS = [
-    '#d4af37', '#f2d785', '#e5c07b',
-    '#ffbd2e', '#c9a227', '#fff8dc',
+    getAccentHex(), accentBright(0.45), accentBright(0.30),
+    '#ffbd2e', accentBright(0.55), '#fff8dc',
   ];
 
   function spawnBurst(bx, by) {
@@ -64,9 +65,9 @@ function launchStreak(canvas, originX, originY, callbacks) {
       currentY -= 12;
 
       const grad = ctx.createLinearGradient(originX, currentY, originX, currentY + streakLen);
-      grad.addColorStop(0, 'rgba(212, 175, 55, 1)');
-      grad.addColorStop(0.5, 'rgba(242, 215, 133, 0.8)');
-      grad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+      grad.addColorStop(0, accentRGBA(1));
+      grad.addColorStop(0.5, `${accentBright(0.45)}cc`);
+      grad.addColorStop(1, accentRGBA(0));
 
       ctx.strokeStyle = grad;
       ctx.lineWidth = 2;
@@ -79,7 +80,7 @@ function launchStreak(canvas, originX, originY, callbacks) {
       ctx.globalAlpha = 0.4;
       ctx.beginPath();
       ctx.arc(originX, currentY, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#f2d785';
+      ctx.fillStyle = accentBright(0.45);
       ctx.fill();
       ctx.globalAlpha = 1;
 
@@ -90,7 +91,7 @@ function launchStreak(canvas, originX, originY, callbacks) {
           vx: (Math.random() - 0.5) * 0.8,
           vy: Math.random() * 1.5,
           radius: 0.5 + Math.random() * 1,
-          color: '#d4af37',
+          color: getAccentHex(),
           alpha: 0.6,
           decay: 0.03 + Math.random() * 0.03,
           gravity: 0.02,
@@ -149,7 +150,7 @@ function runBlackHole(canvas) {
   const cy = H / 2;
   const maxR = Math.min(W, H) * 0.13;
 
-  const COLORS = ['#d4af37', '#f2d785', '#ffe9a8', '#ffffff', '#e5c07b'];
+  const COLORS = [getAccentHex(), accentBright(0.45), '#ffe9a8', '#ffffff', accentBright(0.30)];
   // Scale the particle count to the device so the spiral stays smooth on
   // weaker hardware without changing how the effect looks.
   const tier = getDeviceTier();
@@ -186,10 +187,10 @@ function runBlackHole(canvas) {
     ctx.clearRect(0, 0, W, H);
 
     const glow = ctx.createRadialGradient(cx, cy, r * 0.7, cx, cy, r * 3);
-    glow.addColorStop(0, 'rgba(212,175,55,0)');
-    glow.addColorStop(0.45, `rgba(212,175,55,${0.30 * grow})`);
+    glow.addColorStop(0, accentRGBA(0));
+    glow.addColorStop(0.45, accentRGBA(0.30 * grow));
     glow.addColorStop(0.7, `rgba(255,233,168,${0.18 * grow})`);
-    glow.addColorStop(1, 'rgba(212,175,55,0)');
+    glow.addColorStop(1, accentRGBA(0));
     ctx.fillStyle = glow;
     ctx.beginPath();
     ctx.arc(cx, cy, r * 3, 0, Math.PI * 2);

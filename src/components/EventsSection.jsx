@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { getDeviceTier, CANVAS_FPS } from '../deviceTier';
+import { accentRGBA, accentBright } from '../themeColors';
 import './EventsSection.css';
 
 const events = [
@@ -124,9 +125,9 @@ function OrbCanvas({ containerRef, nodeRefs }) {
 
       for (const seg of segments) {
         const lineGrad = ctx.createLinearGradient(0, seg.from, 0, seg.to);
-        lineGrad.addColorStop(0,   'rgba(212,175,55,0.12)');
-        lineGrad.addColorStop(0.5, 'rgba(212,175,55,0.22)');
-        lineGrad.addColorStop(1,   'rgba(212,175,55,0.12)');
+        lineGrad.addColorStop(0,   accentRGBA(0.12));
+        lineGrad.addColorStop(0.5, accentRGBA(0.22));
+        lineGrad.addColorStop(1,   accentRGBA(0.12));
         ctx.strokeStyle = lineGrad;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -148,8 +149,8 @@ function OrbCanvas({ containerRef, nodeRefs }) {
         if (a > 0.01) {
           const grad = ctx.createRadialGradient(cx, y, 0, cx, y, orb.radius);
           grad.addColorStop(0,   `rgba(255,235,150,${a})`);
-          grad.addColorStop(0.5, `rgba(212,175,55,${a * 0.6})`);
-          grad.addColorStop(1,   'rgba(212,175,55,0)');
+          grad.addColorStop(0.5, accentRGBA(a * 0.6));
+          grad.addColorStop(1,   accentRGBA(0));
 
           ctx.beginPath();
           ctx.arc(cx, y, orb.radius, 0, Math.PI * 2);
@@ -158,7 +159,7 @@ function OrbCanvas({ containerRef, nodeRefs }) {
 
           ctx.beginPath();
           ctx.arc(cx, y, orb.radius * 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(212,175,55,${a * 0.08})`;
+          ctx.fillStyle = accentRGBA(a * 0.08);
           ctx.fill();
         }
 

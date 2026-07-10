@@ -15,8 +15,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(212, 175, 55, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212, 175, 55, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(var(--accent-rgb), 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.025) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
@@ -32,7 +32,7 @@
 .hero__orb--1 {
   width: 600px;
   height: 600px;
-  background: rgba(212, 175, 55, 0.04);
+  background: rgba(var(--accent-rgb), 0.04);
   top: -200px;
   left: -150px;
   animation: float 15s ease-in-out infinite;
@@ -41,7 +41,7 @@
 .hero__orb--2 {
   width: 450px;
   height: 450px;
-  background: rgba(212, 175, 55, 0.03);
+  background: rgba(var(--accent-rgb), 0.03);
   bottom: -150px;
   right: -100px;
   animation: float 20s ease-in-out infinite reverse;
@@ -76,7 +76,7 @@
   padding: 6px 16px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-accent);
-  background: rgba(212, 175, 55, 0.05);
+  background: rgba(var(--accent-rgb), 0.05);
   margin-bottom: var(--space-xl);
 }
 
@@ -111,7 +111,7 @@
 
 .hero__title-accent {
   color: var(--accent);
-  text-shadow: 0 0 60px rgba(212, 175, 55, 0.2);
+  text-shadow: 0 0 60px rgba(var(--accent-rgb), 0.2);
 }
 
 .hero__subtitle {
@@ -235,13 +235,13 @@
   padding: 14px 44px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.4);
 }
 
 .blackhole__btn:hover {
   background: var(--accent-bright, #f2d785);
   transform: translateY(-2px);
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.6);
 }
 
 /* CTAs */

@@ -53,7 +53,7 @@ function SignInPage() {
         <div className="signin__card-glow" />
 
         <div className="signin__logo-wrapper">
-          <img src="https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg" alt="Terminal Phi" className="signin__logo" />
+          <div className="signin__logo" role="img" aria-label="Terminal Phi" />
         </div>
 
         <div className="signin__header">

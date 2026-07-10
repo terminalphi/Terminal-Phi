@@ -55,7 +55,7 @@
   object-fit: cover;
   border-radius: 10px;
   pointer-events: none;
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.15);
 }
 
 .pill-logo-text {
@@ -67,7 +67,7 @@
 }
 
 .pill-logo-prompt {
-  color: #d4af37;
+  color: var(--accent);
 }
 
 /* CENTER: Nav Items (The "Pill") */
@@ -128,7 +128,7 @@
   left: 50%;
   bottom: 0;
   border-radius: 50%;
-  background: #d4af37;
+  background: var(--accent);
   z-index: 1;
   display: block;
   pointer-events: none;
@@ -161,8 +161,8 @@
 }
 
 .pill.is-active {
-  background: rgba(212, 175, 55, 0.1);
-  color: #d4af37;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent);
 }
 
 .pill.is-active::after {
@@ -173,7 +173,7 @@
   transform: translateX(-50%);
   width: 12px;
   height: 12px;
-  background: #d4af37;
+  background: var(--accent);
   border-radius: 50px;
   z-index: 4;
 }
@@ -208,7 +208,7 @@
 .pill-join-btn.is-active {
   background: var(--accent-bright, #f2d785);
   color: var(--bg-primary, #050505) !important;
-  box-shadow: 0 0 20px var(--accent-glow, rgba(212, 175, 55, 0.4));
+  box-shadow: 0 0 20px var(--accent-glow);
   transform: translateY(-1px);
 }
 
@@ -226,7 +226,7 @@
   align-items: center;
   justify-content: center;
   border: 2px solid var(--accent, #d4af37);
-  background: rgba(212, 175, 55, 0.12);
+  background: rgba(var(--accent-rgb), 0.12);
   color: var(--accent-bright, #f2d785);
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-weight: 700;
@@ -243,7 +243,7 @@
 }
 
 .pill-user-icon:hover {
-  box-shadow: 0 0 16px var(--accent-glow, rgba(212, 175, 55, 0.4));
+  box-shadow: 0 0 16px var(--accent-glow);
   transform: translateY(-1px);
 }
 
@@ -293,8 +293,8 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--accent-bright, #f2d785);
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid var(--border-accent, rgba(212, 175, 55, 0.2));
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid var(--border-accent);
   border-radius: var(--radius-sm, 6px);
   padding: 9px 12px;
   cursor: pointer;
@@ -417,19 +417,19 @@
 
 .mobile-menu-popover .mobile-menu-link:hover {
   cursor: pointer;
-  background-color: rgba(212, 175, 55, 0.1);
-  color: #d4af37;
+  background-color: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent);
 }
 
 .mobile-menu-popover .mobile-menu-link.is-active {
-  background-color: rgba(212, 175, 55, 0.15);
-  color: #d4af37;
+  background-color: rgba(var(--accent-rgb), 0.15);
+  color: var(--accent);
 }
 
 .mobile-menu-join {
   display: block;
   padding: 12px 20px;
-  background: #d4af37;
+  background: var(--accent);
   color: #050505;
   text-decoration: none;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);

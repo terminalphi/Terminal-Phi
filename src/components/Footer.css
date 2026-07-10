@@ -28,7 +28,13 @@
 
 .footer__logo-img {
   width: 32px;
-  height: auto;
+  aspect-ratio: 1;
+  background-color: var(--accent);
+  -webkit-mask-image: url("https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg");
+  mask-image: url("https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg");
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 }
 
 .footer__brand-name {
@@ -68,7 +74,7 @@
 .footer__social-link:hover {
   color: var(--accent);
   border-color: var(--border-accent);
-  background: rgba(212, 175, 55, 0.05);
+  background: rgba(var(--accent-rgb), 0.05);
   transform: translateY(-2px);
 }
 

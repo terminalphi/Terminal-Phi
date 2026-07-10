@@ -142,15 +142,15 @@
 .join__input:focus,
 .join__textarea:focus {
   border-color: var(--border-accent-strong);
-  background: rgba(212, 175, 55, 0.04);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+  background: rgba(var(--accent-rgb), 0.04);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.08);
 }
 
 /* Email prefilled from the signed-in Google account — read-only */
 .join__input--locked {
   color: var(--accent-bright);
   border-color: var(--border-accent);
-  background: rgba(212, 175, 55, 0.06);
+  background: rgba(var(--accent-rgb), 0.06);
   cursor: not-allowed;
 }
 

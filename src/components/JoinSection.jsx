@@ -200,7 +200,7 @@ function JoinSection() {
               </button>
 
               {submitStatus && (
-                <p style={{ color: submitStatus.startsWith('Error') || submitStatus.startsWith('This') ? '#ff5f57' : '#d4af37', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', textAlign: 'center', marginTop: '12px' }}>
+                <p style={{ color: submitStatus.startsWith('Error') || submitStatus.startsWith('This') ? '#ff5f57' : 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', textAlign: 'center', marginTop: '12px' }}>
                   {submitStatus}
                 </p>
               )}

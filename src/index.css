@@ -12,11 +12,16 @@
   --bg-card-hover: rgba(255, 255, 255, 0.05);
   --bg-glass: rgba(10, 10, 10, 0.75);
 
-  --accent: #d4af37;
-  --accent-dim: #9a7b22;
-  --accent-bright: #f2d785;
-  --accent-glow: rgba(212, 175, 55, 0.15);
-  --accent-glow-strong: rgba(212, 175, 55, 0.35);
+  /* Accent – RGB channels allow runtime theme-swapping via JS */
+  --accent-r: 212;
+  --accent-g: 175;
+  --accent-b: 55;
+  --accent-rgb: var(--accent-r), var(--accent-g), var(--accent-b);
+  --accent: rgb(var(--accent-rgb));
+  --accent-dim: color-mix(in srgb, var(--accent) 65%, black);
+  --accent-bright: color-mix(in srgb, var(--accent) 55%, white);
+  --accent-glow: rgba(var(--accent-rgb), 0.15);
+  --accent-glow-strong: rgba(var(--accent-rgb), 0.35);
 
   --text-primary: #e8e8e8;
   --text-secondary: #888888;
@@ -24,8 +29,8 @@
   --text-accent: var(--accent);
 
   --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-accent: rgba(212, 175, 55, 0.2);
-  --border-accent-strong: rgba(212, 175, 55, 0.5);
+  --border-accent: rgba(var(--accent-rgb), 0.2);
+  --border-accent-strong: rgba(var(--accent-rgb), 0.5);
 
   /* Typography */
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
@@ -262,7 +267,7 @@ img, video {
 
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(212, 175, 55, 0.05);
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(var(--accent-rgb), 0.05);
   }
   50% {
     box-shadow: 0 0 30px var(--accent-glow-strong), 0 0 60px var(--accent-glow);
@@ -354,8 +359,8 @@ img, video {
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(var(--accent-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
   animation: gridPulse 8s ease-in-out infinite;
 }
@@ -366,16 +371,16 @@ img, video {
    Light "parchment" cards + gold connectors
    ============================================ */
 :root {
-  --kg-line: rgba(212, 175, 55, 0.45);
+  --kg-line: rgba(var(--accent-rgb), 0.45);
   /* translucent frosted-dark cards so the background shows through;
      they turn fully opaque on hover */
-  --kg-card-bg: rgba(22, 20, 14, 0.22);
-  --kg-card-bg-hover: rgba(32, 28, 18, 1);
-  --kg-card-border: rgba(212, 175, 55, 0.28);
-  --kg-card-border-hover: rgba(212, 175, 55, 0.7);
+  --kg-card-bg: color-mix(in srgb, var(--accent) 3%, rgba(15, 15, 15, 0.4));
+  --kg-card-bg-hover: color-mix(in srgb, var(--accent) 12%, #0a0a0a);
+  --kg-card-border: rgba(var(--accent-rgb), 0.28);
+  --kg-card-border-hover: rgba(var(--accent-rgb), 0.7);
   --kg-ink: #ece8df;
   --kg-ink-soft: #b8b1a2;
-  --kg-gold-deep: #e3c069;
+  --kg-gold-deep: var(--accent-bright);
 }
 
 .kgraph__head {
@@ -415,7 +420,7 @@ img, video {
   padding: 12px 28px;
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
-  background: rgba(212, 175, 55, 0.07);
+  background: rgba(var(--accent-rgb), 0.07);
   box-shadow: 0 0 24px var(--accent-glow);
   /* entrance */
   opacity: 0;
@@ -496,13 +501,13 @@ img, video {
 
 @keyframes kgPulse {
   0% {
-    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 0 rgba(212, 175, 55, 0.32);
+    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 0 rgba(var(--accent-rgb), 0.32);
   }
   70% {
-    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 16px rgba(212, 175, 55, 0);
+    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 16px rgba(var(--accent-rgb), 0);
   }
   100% {
-    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 0 rgba(212, 175, 55, 0);
+    box-shadow: 0 0 24px var(--accent-glow), 0 0 0 0 rgba(var(--accent-rgb), 0);
   }
 }
 
@@ -543,7 +548,7 @@ img, video {
   padding: 4px 9px;
   border: 1px solid var(--kg-card-border-hover);
   border-radius: 3px;
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 .kcard__title {

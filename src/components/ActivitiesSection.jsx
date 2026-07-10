@@ -46,13 +46,13 @@ const zones = [
 
 // Colour tokens for the SVG graph engine.
 const C = {
-  LINE: 'rgba(212,175,55,0.3)',    // default connector stroke
-  LINE_H: '#d4af37',                 // hover connector stroke
-  DOT: 'rgba(212,175,55,0.5)',    // flowing dot default
-  DOT_H: '#f2d785',                 // flowing dot hover
-  END: 'rgba(255,255,255,0.15)',   // endpoint ring default
-  END_H: '#d4af37',                 // endpoint ring hover
-  SRC: '#d4af37',                 // source dot at category node
+  LINE: 'rgba(var(--accent-rgb), 0.3)',    // default connector stroke
+  LINE_H: 'var(--accent)',                 // hover connector stroke
+  DOT: 'rgba(var(--accent-rgb), 0.5)',     // flowing dot default
+  DOT_H: 'var(--accent-bright)',           // flowing dot hover
+  END: 'rgba(255,255,255,0.15)',           // endpoint ring default
+  END_H: 'var(--accent)',                  // endpoint ring hover
+  SRC: 'var(--accent)',                    // source dot at category node
 };
 
 function svgEl(tag, attrs) {

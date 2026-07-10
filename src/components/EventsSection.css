@@ -67,7 +67,7 @@
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 800;
-  color: rgba(212, 175, 55, 0.15);
+  color: rgba(var(--accent-rgb), 0.15);
   line-height: 1;
   flex-shrink: 0;
 }
@@ -105,7 +105,7 @@
   padding: 3px 8px;
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-full);
-  background: rgba(212, 175, 55, 0.04);
+  background: rgba(var(--accent-rgb), 0.04);
 }
 
 /* Center divider */
