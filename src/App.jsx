@@ -159,7 +159,7 @@ function AnimatedRoutes() {
   /* Ctrl + ` shortcut to toggle terminal */
   useEffect(() => {
     const onKey = (e) => {
-      if (e.ctrlKey && e.key === '`') {
+      if ((e.metaKey || e.ctrlKey) && e.key === '`' ) {
         e.preventDefault();
         setTerminalOpen(prev => !prev);
       }
