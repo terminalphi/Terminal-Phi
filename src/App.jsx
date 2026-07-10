@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Threads from './components/Threads';
+import Oneko from './components/Oneko';
 import { getDeviceTier, THREADS_SETTINGS } from './deviceTier';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/SignInPage';
@@ -35,6 +36,7 @@ function AnimatedRoutes() {
 
   return (
     <>
+      <Oneko />
       {showThreads && (
         <div className="app-bg-threads" aria-hidden="true">
           <Threads

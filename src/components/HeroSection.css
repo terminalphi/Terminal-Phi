@@ -179,29 +179,6 @@
   text-shadow: 0 0 8px rgba(255, 95, 87, 0.4);
 }
 
-.hero__cat-sprite {
-  position: absolute;
-  top: -26px;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  font-family: var(--font-mono, monospace);
-  font-size: 8px;
-  line-height: 1.1;
-  font-weight: 700;
-  white-space: pre;
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  z-index: 20;
-  will-change: transform, opacity, filter;
-}
-
-.hero__cat-eyes {
-  color: #ff8fd0;
-  text-shadow: 0 0 6px rgba(255, 143, 208, 0.7);
-}
-
 /* ── Black hole overlay (devours the page) ── */
 .blackhole {
   position: fixed;

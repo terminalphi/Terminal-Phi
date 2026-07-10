@@ -258,12 +258,10 @@ function HeroSection() {
 
   const fireworkFired = useRef(false);
   const [catClicked, setCatClicked] = useState(false);
-  const [showCat, setShowCat] = useState(false);
   const [blackHole, setBlackHole] = useState('idle'); // 'idle' | 'consuming' | 'done'
 
   const cleanupRef = useRef(null);
   const subtitleTimeoutRef = useRef(null);
-  const catSpriteRef = useRef(null);
   const bhCanvasRef = useRef(null);
   const bhCleanupRef = useRef(null);
 
@@ -304,7 +302,7 @@ function HeroSection() {
     scrollEl.classList.add('hero__scroll--fired');
     setSubtitleSwapped(true);
 
-    if (catClicked && showCat) {
+    if (catClicked) {
       // THE CAT REACHED THE DETONATOR — open a black hole that devours the site.
       cleanupRef.current?.();
       setSubtitleText('Curiosity killed the cat.');
@@ -333,7 +331,7 @@ function HeroSection() {
       fireworkFired.current = false;
     }, 4500);
 
-  }, [catClicked, showCat]);
+  }, [catClicked]);
 
   /* Black-hole sequence: grow the singularity, suck the whole site into it,
      then reveal the RETRY button once the page is emptied. */
@@ -375,43 +373,8 @@ function HeroSection() {
   const handleCatClick = useCallback(() => {
     if (catClicked) return;
     setCatClicked(true);
-    setShowCat(true);
-
-    // Wait for DOM to render the cat sprite, then animate
-    setTimeout(() => {
-      const sprite = catSpriteRef.current;
-      const scrollEl = scrollRef.current;
-      if (!sprite || !scrollEl) return;
-
-      const spriteRect = sprite.getBoundingClientRect();
-      const scrollRect = scrollEl.getBoundingClientRect();
-
-      // Calculate delta to move exactly above the scroll indicator
-      const destX = scrollRect.left + scrollRect.width / 2 - (spriteRect.left + spriteRect.width / 2);
-      const destY = scrollRect.top - spriteRect.top - 40;
-
-      const tl = gsap.timeline();
-
-      // Phase 1: Pop out
-      tl.fromTo(sprite,
-        { scale: 0, y: 0, opacity: 1, rotation: 0, x: 0 },
-        { scale: 2.5, y: -40, duration: 0.5, ease: 'back.out(1.5)' }
-      );
-
-      // Phase 2: Panic shake
-      tl.to(sprite, {
-        rotation: 15, duration: 0.1, yoyo: true, repeat: 3
-      }, "+=0.1");
-
-      // Phase 3: Walk/Hop to the firework detonator
-      tl.to(sprite, {
-        x: destX,
-        y: destY,
-        duration: 1.5,
-        ease: 'power1.inOut'
-      }, "+=0.2");
-
-    }, 0);
+    // Spawn the oneko cat that follows the cursor
+    window.dispatchEvent(new Event('spawn-oneko'));
   }, [catClicked]);
 
   useEffect(() => {
@@ -452,13 +415,6 @@ function HeroSection() {
               ~/terminal-phi $ <span className="hero__terminal-cmd">
                 <span className="hero__terminal-cmd-cat" onClick={handleCatClick}>
                   cat
-                  {showCat && (
-                    <pre className="hero__cat-sprite" ref={catSpriteRef} aria-hidden="true">
-                      {' /\\_/\\\n('}
-                      <span className="hero__cat-eyes"> o.o </span>
-                      {')\n > ^ <'}
-                    </pre>
-                  )}
                 </span> mission.txt
               </span>
             </span>
