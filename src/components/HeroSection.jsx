@@ -66,7 +66,7 @@ function launchStreak(canvas, originX, originY, callbacks) {
 
       const grad = ctx.createLinearGradient(originX, currentY, originX, currentY + streakLen);
       grad.addColorStop(0, accentRGBA(1));
-      grad.addColorStop(0.5, `${accentBright(0.45)}cc`);
+      grad.addColorStop(0.5, accentBright(0.45, 0.8));
       grad.addColorStop(1, accentRGBA(0));
 
       ctx.strokeStyle = grad;

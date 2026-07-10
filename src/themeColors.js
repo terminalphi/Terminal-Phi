@@ -32,11 +32,12 @@ export function accentRGBA(a = 1) {
 /**
  * Lighter tint – mixes toward white
  * @param {number} amt 0-1, how much white
+ * @param {number} alpha 0-1, opacity
  */
-export function accentBright(amt = 0.45) {
+export function accentBright(amt = 0.45, alpha = 1) {
   const { r, g, b } = getAccentRGB();
   const mix = (c) => Math.round(c + (255 - c) * amt);
-  return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+  return `rgba(${mix(r)},${mix(g)},${mix(b)},${alpha})`;
 }
 
 /**
