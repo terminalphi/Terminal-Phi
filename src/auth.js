@@ -81,18 +81,33 @@ export const onAuthChange = (callback) => {
 };
 
 /**
- * Auth gate used by the "Login" (navbar) and "Join Us" (hero) buttons.
+ * Fetch the signed-in user's profile from member_profiles.
+ * Returns the profile row or null if none exists.
  */
-export const proceedToJoin = async (navigate) => {
-  try {
-    const user = await getCurrentUser();
-    if (user) {
-      navigate('/join_us');
-      return;
-    }
-    navigate('/signin?next=/join_us');
-  } catch (error) {
-    console.error('Auth flow error:', error?.message || error);
-    navigate('/join_us');
-  }
+export const getProfile = async (userId) => {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('member_profiles')
+    .select('*')
+    .eq('id', userId)
+    .limit(1)
+    .single();
+  if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+  return data ?? null;
 };
+
+/**
+ * Insert or update the signed-in user's profile in member_profiles.
+ * Uses upsert so it works for both first-time creation and edits.
+ */
+export const upsertProfile = async (profile) => {
+  if (!supabase) throw new Error('Supabase not configured');
+  const { data, error } = await supabase
+    .from('member_profiles')
+    .upsert(profile, { onConflict: 'id' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
