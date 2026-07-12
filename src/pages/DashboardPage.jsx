@@ -59,7 +59,7 @@ function DashboardPage() {
         id: user.id,
         name: profileData.name,
         email: profileData.email,
-        portfolio_link: profileData.portfolio_link || null,
+        gh_user: profileData.gh_user || null,
         lc_user: profileData.lc_user || null,
         gfg_user: profileData.gfg_user || null,
         cc_user: profileData.cc_user || null,

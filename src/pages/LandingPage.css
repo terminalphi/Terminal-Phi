@@ -155,11 +155,14 @@
   width: clamp(180px, 30vw, 320px);
   aspect-ratio: 1;
   background-color: var(--accent);
-  -webkit-mask-image: url("https://assets.terminalphi.xyz/logo_svg.svg");
-  mask-image: url("https://assets.terminalphi.xyz/logo_svg.svg");
+  -webkit-mask-image: url("https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg");
+  mask-image: url("https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg");
   -webkit-mask-size: contain;
+  mask-size: contain;
   -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   -webkit-mask-position: center;
+  mask-position: center;
   filter: drop-shadow(0 0 30px rgba(var(--accent-rgb), 0.2));
   transition: filter var(--transition-normal);
 }

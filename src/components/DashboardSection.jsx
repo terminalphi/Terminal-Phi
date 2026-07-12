@@ -83,7 +83,7 @@ function DashboardSection({ user, profile, onSave }) {
   const defaultForm = {
     name: profile?.name || user?.user_metadata?.full_name || user?.user_metadata?.name || '',
     email: profile?.email || user?.email || '',
-    portfolio_link: profile?.portfolio_link || '',
+    gh_user: profile?.gh_user || '',
     lc_user: profile?.lc_user || '',
     gfg_user: profile?.gfg_user || '',
     cc_user: profile?.cc_user || '',
@@ -154,13 +154,12 @@ function DashboardSection({ user, profile, onSave }) {
             {form.email}
           </p>
 
-          {form.portfolio_link && !editing && (
-            <a href={form.portfolio_link} target="_blank" rel="noopener noreferrer" className="db-profile__portfolio-link">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          {form.gh_user && !editing && (
+            <a href={`https://github.com/${form.gh_user}`} target="_blank" rel="noopener noreferrer" className="db-profile__portfolio-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
               </svg>
-              Portfolio
+              GitHub
             </a>
           )}
 
@@ -265,13 +264,13 @@ function DashboardSection({ user, profile, onSave }) {
                     />
                   </div>
                   <div className="db-edit__field db-edit__field--full">
-                    <label className="db-edit__label">Portfolio Link</label>
+                    <label className="db-edit__label">Github User</label>
                     <input
                       className="db-edit__input"
-                      type="url"
-                      placeholder="https://your-portfolio.com"
-                      value={form.portfolio_link}
-                      onChange={handleChange('portfolio_link')}
+                      type="text"
+                      placeholder="GitHub username"
+                      value={form.gh_user}
+                      onChange={handleChange('gh_user')}
                     />
                   </div>
                 </div>
