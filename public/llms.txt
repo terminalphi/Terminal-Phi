@@ -1,0 +1,36 @@
+# Terminal Phi - Website Content
+
+## About Terminal Phi (Who We Are)
+Terminal Phi is a society for the deeply obsessed, problem solvers drawn together not by ambition, but by a quieter compulsion to create. 
+
+### Objectives
+We're an independent collective building the tech society we wish existed. No bureaucracy, no gatekeeping.
+
+### Who Can Join
+Those who feel the pull, if you build because you want to and not because you have to, Terminal Phi is waiting for you. Inducements fade, hunger does not.
+
+## Our Activities
+What our members can expect to learn and experience.
+
+### Prior
+- **Project Building (Core, Hands-on):** Real projects, not demonstrations. Tools that didn't exist until someone decided they should. We build things that work in the real world - Distributed backends to ML pipelines. Code that ships, not code that sits.
+- **Competitive Programming (Rigor):** The kind of thinking that sharpens everything else, problem-solving isn't a skill, it's a practice you never finish.
+- **Core CS Subjects (Fundamentals):** Most carry these subjects like debt — owed but never truly paid. Operating Systems, DBMS, OOP, not facts to memorize, but weight worth bearing. We actually pay it.
+
+### Posterior
+- **Open Problems (Monthly):** Problems don't wait for you to feel ready. We put you in front of the real ones - ambiguous, messy, unresolved and trust you to find your way through.
+- **System Design (Advanced):** How do you design something that holds under pressure, at scale, in the hands of strangers waiting to tear it apart? Sit with that question and find an answer to it.
+
+## Events & Hackathons
+- **Terminal Phi 2026:** Internal Events. Stay tuned for updates.
+
+## Our Team (The Builders)
+- **Shreeansh Aggarwal:** President
+- **Aadi Jain:** Vice President
+- **Hardik Agrawal:** General Secretary
+
+## Join Terminal Phi
+Become a Member. Applications are open — tell us who you are and why you build.
+**Perks:**
+- Build projects with your assigned team
+- Problem solving & build sessions
