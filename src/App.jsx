@@ -12,6 +12,7 @@ import ActivitiesPage from './pages/ActivitiesPage';
 import EventsPage from './pages/EventsPage';
 import TeamPage from './pages/TeamPage';
 import JoinPage from './pages/JoinPage';
+import DashboardPage from './pages/DashboardPage';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Custom terminal commands
@@ -56,7 +57,7 @@ function useTerminalCommands(navigate, setThreadColor) {
       handler: (args, ctx) => {
         const dest = args[0];
         if (!dest) return { text: '  Usage: goto <path>', type: 'error' };
-        const valid = ['/', '/home', '/about_us', '/activities', '/events', '/team', '/join_us', '/signin'];
+        const valid = ['/', '/home', '/about_us', '/activities', '/events', '/team', '/join_us', '/signin', '/dashboard'];
         if (!valid.includes(dest)) {
           return [
             { text: `  Unknown route: ${dest}`, type: 'error' },
@@ -209,6 +210,7 @@ function AnimatedRoutes() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/team" element={<TeamPage />} />
           <Route path="/join_us" element={<JoinPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </div>
 

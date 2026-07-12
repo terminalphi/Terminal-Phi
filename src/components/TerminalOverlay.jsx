@@ -114,7 +114,7 @@ export default function TerminalOverlay({
   welcomeText = 'Welcome to Terminal Phi shell. Type "help" to get started.',
   navigate = null,
 }) {
-  const [output, setOutput] = useState(/** @type {OutputLine[]} */ ([]));
+  const [output, setOutput] = useState(/** @type {OutputLine[]} */([]));
   const [inputValue, setInputValue] = useState('');
   const [cmdHistory, setCmdHistory] = useState([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
