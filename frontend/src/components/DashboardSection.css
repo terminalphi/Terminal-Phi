@@ -90,7 +90,7 @@
   font-weight: bold;
 }
 
-.status-checking..., .status-error-checking-status {
+.status-checking, .status-error-checking-status {
   color: #a78bfa;
 }
 

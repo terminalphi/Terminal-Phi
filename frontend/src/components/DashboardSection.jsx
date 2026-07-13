@@ -84,7 +84,7 @@ function DashboardSection({ user, profile }) {
         
         <div className="new-dashboard-card">
           <h3>Terminal Phi Status</h3>
-          <p>Status: <span className={`status-${joinStatus.replace(/\s+/g, '-').toLowerCase()}`}>{joinStatus}</span></p>
+          <p>Status: <span className={`status-${joinStatus.replace(/\s+/g, '-').replace(/\./g, '').toLowerCase()}`}>{joinStatus}</span></p>
           {joinStatus === 'Not Registered' && (
             <Link to="/join" className="new-dashboard-link">Fill Join Form</Link>
           )}
