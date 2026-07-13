@@ -313,10 +313,10 @@ function DashboardSection({ user, profile, stats, onSave }) {
                       dark: ['#2d2d2d', '#1e4b2d', '#2b783c', '#3db04b', '#48e05a']
                     }}
                     colorScheme="dark"
-                    blockSize={12}
-                    blockRadius={2}
-                    blockMargin={4}
-                    fontSize={12}
+                    blockSize={13}
+                    blockRadius={3}
+                    blockMargin={6}
+                    fontSize={13}
                     showWeekdayLabels
                   />
                 </div>
@@ -328,16 +328,16 @@ function DashboardSection({ user, profile, stats, onSave }) {
                 <span className="db-stat-card__value">{aggs.totalContests}</span>
                 
                 <div className="db-list">
-                  {aggs.counts.lc > 0 && (
+                  {aggs.lcContests > 0 && (
                     <div className="db-list-item">
                        <span>LeetCode</span>
-                       <span>{aggs.counts.lc}</span>
+                       <span>{aggs.lcContests}</span>
                     </div>
                   )}
-                  {aggs.counts.cc > 0 && (
+                  {aggs.cfContests > 0 && (
                     <div className="db-list-item">
-                       <span>CodeChef</span>
-                       <span>{aggs.counts.cc}</span>
+                       <span>Codeforces</span>
+                       <span>{aggs.cfContests}</span>
                     </div>
                   )}
                 </div>
@@ -391,21 +391,21 @@ function DashboardSection({ user, profile, stats, onSave }) {
                   {aggs.ratings.leetcode && (
                     <div className="db-ranking-item">
                       <span className="db-ranking-platform">LEETCODE</span>
-                      <span className="db-ranking-val">{aggs.ratings.leetcode}</span>
+                      <span className="db-ranking-val">{Math.round(aggs.ratings.leetcode)}</span>
                     </div>
                   )}
                   {aggs.ratings.codeforces && (
                     <div className="db-ranking-item">
                       <span className="db-ranking-platform">CODEFORCES</span>
-                      <span className="db-ranking-val">{aggs.ratings.codeforces}</span>
-                      <span className="db-ranking-max">(max: {aggs.ratings.cf_max})</span>
+                      <span className="db-ranking-val">{Math.round(aggs.ratings.codeforces)}</span>
+                      <span className="db-ranking-max">(max: {Math.round(aggs.ratings.cf_max)})</span>
                     </div>
                   )}
                   {aggs.ratings.codechef && (
                     <div className="db-ranking-item">
                       <span className="db-ranking-platform">CODECHEF</span>
-                      <span className="db-ranking-val">{aggs.ratings.codechef}</span>
-                      <span className="db-ranking-max">(max: {aggs.ratings.cc_max})</span>
+                      <span className="db-ranking-val">{Math.round(aggs.ratings.codechef)}</span>
+                      <span className="db-ranking-max">(max: {Math.round(aggs.ratings.cc_max)})</span>
                     </div>
                   )}
                 </div>
