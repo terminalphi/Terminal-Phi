@@ -7,13 +7,12 @@ import Footer from '../components/Footer';
 import { getCurrentUser, getProfile, upsertProfile } from '../auth';
 import './MainSite.css';
 
-/* ──────────────────────────────────────────────────────────────── */
-
 function DashboardPage() {
   const [loaded, setLoaded] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -36,8 +35,33 @@ function DashboardPage() {
         if (mounted) {
           setProfile(profileData);
           setAuthChecked(true);
-          setLoaded(true);
         }
+
+        // Fetch stats from Flask backend
+        if (profileData) {
+          try {
+            const resp = await fetch('/api/stats', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                lc_user: profileData.lc_user,
+                gfg_user: profileData.gfg_user,
+                cc_user: profileData.cc_user,
+                cf_user: profileData.cf_user,
+                hr_user: profileData.hr_user
+              })
+            });
+            if (resp.ok) {
+              const statsData = await resp.json();
+              if (mounted) setStats(statsData);
+              console.log("Fetched Stats from Flask:", statsData);
+            }
+          } catch (err) {
+            console.error("Failed to fetch stats:", err);
+          }
+        }
+
+        if (mounted) setLoaded(true);
       } catch (err) {
         console.error('[DashboardPage]', err);
         if (mounted) {
@@ -98,6 +122,7 @@ function DashboardPage() {
       <DashboardSection
         user={user}
         profile={profile}
+        stats={stats}
         onSave={handleSaveProfile}
       />
     );
