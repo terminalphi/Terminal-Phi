@@ -69,7 +69,7 @@ function JoinSection() {
           Roll_Number: formData.rollNo || null,
           Interests: formData.interest || null,
           Portfolio: formData.github || null,
-          About: formData.why || null,
+          About: formData.why_join || null,
         },
       ]);
 
