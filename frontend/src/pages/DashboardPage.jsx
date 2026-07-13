@@ -40,7 +40,7 @@ function DashboardPage() {
         // Fetch stats from Flask backend
         if (profileData) {
           try {
-            const resp = await fetch('/api/stats', {
+            const resp = await fetch('https://api.terminalphi.xyz/api/stats', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
