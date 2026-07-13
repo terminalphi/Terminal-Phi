@@ -13,6 +13,7 @@ import EventsPage from './pages/EventsPage';
 import TeamPage from './pages/TeamPage';
 import JoinPage from './pages/JoinPage';
 import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Custom terminal commands
@@ -209,8 +210,10 @@ function AnimatedRoutes() {
           <Route path="/activities" element={<ActivitiesPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/team" element={<TeamPage />} />
-          <Route path="/join_us" element={<JoinPage />} />
+          <Route path="/join" element={<JoinPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 

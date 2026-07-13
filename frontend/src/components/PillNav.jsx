@@ -314,8 +314,8 @@ const PillNav = ({
                 <div className="pill-user-menu">
                   <div className="pill-user-welcome">Welcome, {userName(user)}</div>
                   <div className="pill-user-email">{user.email}</div>
-                  <Link to="/dashboard" className="pill-user-dashboard" onClick={() => setUserMenuOpen(false)}>
-                    Dashboard
+                  <Link to="/profile" className="pill-user-dashboard" onClick={() => setUserMenuOpen(false)}>
+                    Profile
                   </Link>
                   <button type="button" className="pill-user-signout" onClick={handleSignOut}>
                     Sign out
