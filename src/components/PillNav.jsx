@@ -157,7 +157,7 @@ const PillNav = ({
     }
 
     return () => window.removeEventListener('resize', onResize);
-  }, [items, ease, initialLoadAnimation]);
+  }, [filteredItems, ease, initialLoadAnimation]);
 
   const handleEnter = i => {
     const tl = tlRefs.current[i];
