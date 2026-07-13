@@ -214,10 +214,12 @@
 .db-heatmap__scroll {
   overflow-x: auto;
   padding-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 /* Thinner scrollbar */
 .db-heatmap__scroll::-webkit-scrollbar {
-  height: 6px;
+  height: 4px;
 }
 .db-heatmap__scroll::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);

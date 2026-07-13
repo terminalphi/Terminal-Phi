@@ -198,29 +198,59 @@ function DashboardSection({ user, profile, stats, onSave }) {
         // Clear previous lines
         svg.querySelectorAll('.month-sep').forEach(el => el.remove());
         
-        const monthGroup = svg.querySelector('.react-activity-calendar__legend-month');
-        if (monthGroup) {
-          const texts = monthGroup.querySelectorAll('text');
-          texts.forEach((text, i) => {
-            if (i === 0) return; // Skip the first month
-            // Shift slightly left to center the line between columns (block width is 13, gap is 6)
-            const x = parseFloat(text.getAttribute('x')) - 3; 
-            
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.setAttribute('x1', x);
-            line.setAttribute('y1', '20'); // Start just below month labels
-            line.setAttribute('x2', x);
-            line.setAttribute('y2', '160'); // End at the bottom of the grid
-            line.setAttribute('stroke', 'rgba(255, 255, 255, 0.25)'); // White line
-            line.setAttribute('stroke-width', '1');
-            line.setAttribute('stroke-dasharray', '4 2'); 
-            line.classList.add('month-sep');
-            
-            svg.appendChild(line);
-          });
-        }
+        const rects = Array.from(svg.querySelectorAll('rect[data-date]'));
+        if (rects.length === 0) return;
+        
+        const svgBounds = svg.getBoundingClientRect();
+        const margin = 6;
+        
+        const firstRectBounds = rects[0].getBoundingClientRect();
+        const lastRectBounds = rects[rects.length - 1].getBoundingClientRect();
+        
+        const y_top = firstRectBounds.top - svgBounds.top - margin / 2;
+        const y_bottom = lastRectBounds.bottom - svgBounds.top + margin / 2;
+
+        const firstDays = rects.filter(rect => {
+          const date = rect.getAttribute('data-date');
+          return date && date.endsWith('-01');
+        });
+
+        firstDays.forEach((rect, i) => {
+          if (i === 0) return; // skip the very first month label line
+          
+          const dateStr = rect.getAttribute('data-date');
+          // In UTC, new Date('YYYY-MM-DD') is at 00:00 UTC. getUTCDay() gets day of week.
+          const d = new Date(dateStr);
+          const row_index = d.getUTCDay(); 
+          
+          const rb = rect.getBoundingClientRect();
+          const rx = rb.left - svgBounds.left;
+          const ry = rb.top - svgBounds.top;
+          const width = rb.width;
+          
+          const x_left = rx - margin / 2;
+          const x_right = rx + width + margin / 2;
+          const y_mid = ry - margin / 2;
+          
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          
+          let dAttr = '';
+          if (row_index === 0) {
+            dAttr = `M ${x_left} ${y_top} L ${x_left} ${y_bottom}`;
+          } else {
+            dAttr = `M ${x_right} ${y_top} L ${x_right} ${y_mid} L ${x_left} ${y_mid} L ${x_left} ${y_bottom}`;
+          }
+          
+          path.setAttribute('d', dAttr);
+          path.setAttribute('stroke', 'rgba(255, 255, 255, 0.2)'); 
+          path.setAttribute('stroke-width', '1');
+          path.setAttribute('fill', 'none');
+          path.classList.add('month-sep');
+          
+          svg.appendChild(path);
+        });
       }
-    }, 100);
+    }, 200);
   }, [aggs]);
 
   /* ── Render ─────────────────────────────────────────────── */
