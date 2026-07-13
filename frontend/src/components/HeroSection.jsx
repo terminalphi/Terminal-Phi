@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
-import { proceedToJoin } from '../auth';
+
 import { getDeviceTier } from '../deviceTier';
 import { accentRGBA, accentBright, getAccentHex } from '../themeColors';
 import './HeroSection.css';
@@ -422,7 +422,7 @@ function HeroSection() {
           </div>
 
           <div className="hero__cta-group">
-            <button onClick={() => proceedToJoin(navigate)} className="hero__cta-primary hero__cta-primary--lg">
+            <button onClick={() => navigate('/join_us')} className="hero__cta-primary hero__cta-primary--lg">
               JOIN US
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17l9.2-9.2M17 17V7.8H7.8" />

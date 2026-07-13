@@ -323,49 +323,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Divider */
-.signin__divider {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  margin: var(--space-lg) 0;
-}
-
-.signin__divider-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border-subtle);
-}
-
-.signin__divider-text {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-/* Guest button */
-.signin__guest {
-  width: 100%;
-  padding: 12px;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  letter-spacing: 0.05em;
-}
-
-.signin__guest:hover {
-  color: var(--accent);
-  border-color: var(--border-accent);
-  background: rgba(var(--accent-rgb), 0.03);
-}
-
 /* Footer */
 .signin__footer-hint {
   position: absolute;
@@ -397,3 +354,4 @@
     left: var(--space-md);
   }
 }
+

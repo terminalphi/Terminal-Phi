@@ -35,3 +35,11 @@ dist-ssr
 
 # Threads video render scratch
 .threads-frames/
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+*.egg-info/

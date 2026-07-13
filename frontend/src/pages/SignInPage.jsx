@@ -31,10 +31,6 @@ function SignInPage() {
     }
   };
 
-  const handleGuest = () => {
-    navigate(next);
-  };
-
   return (
     <div className="signin">
       <div className="signin__grid" />
@@ -58,7 +54,7 @@ function SignInPage() {
 
         <div className="signin__header">
           <span className="signin__prompt">&gt; authenticate</span>
-          <p className="signin__subtitle">Enter your credentials to access Terminal Phi</p>
+          <p className="signin__subtitle">Sign in with Google to access your Dashboard</p>
         </div>
 
         <div className="signin__form">
@@ -90,16 +86,6 @@ function SignInPage() {
             </div>
           )}
         </div>
-
-        <div className="signin__divider">
-          <span className="signin__divider-line" />
-          <span className="signin__divider-text">or</span>
-          <span className="signin__divider-line" />
-        </div>
-
-        <button className="signin__guest" onClick={handleGuest} id="guest-button">
-          continue as guest
-        </button>
       </div>
 
       <p className="signin__footer-hint">
@@ -110,3 +96,4 @@ function SignInPage() {
 }
 
 export default SignInPage;
+

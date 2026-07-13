@@ -5,8 +5,9 @@ export const NAV_ITEMS = [
   { label: 'Activities', href: '/activities' },
   { label: 'Events', href: '/events' },
   { label: 'Team', href: '/team' },
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Dashboard', href: '/dashboard', requiresAuth: true },
 ];
 
 export const NAV_LOGO = 'https://res.cloudinary.com/dtsgjbckj/image/upload/v1782581071/terminal_phi_logo_aid75r.svg';
 export const NAV_LOGO_ALT = 'Terminal Phi';
+

@@ -287,6 +287,28 @@
   border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
 }
 
+.pill-user-dashboard {
+  display: block;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-primary, #e8e8e8);
+  text-decoration: none;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.pill-user-dashboard:hover {
+  color: var(--accent, #d4af37);
+  background: rgba(var(--accent-rgb), 0.08);
+  border-color: var(--border-accent, rgba(212, 175, 55, 0.2));
+}
+
 .pill-user-signout {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.78rem;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { getCurrentUser, onAuthChange, logoutUser } from '../auth';
@@ -35,6 +35,11 @@ const PillNav = ({
   const [user, setUser] = useState(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  // Filter out nav items that require auth when user isn't signed in
+  const filteredItems = useMemo(
+    () => items.filter(item => !item.requiresAuth || user),
+    [items, user]
+  );
 
   // Track auth state — show the user icon once signed in
   useEffect(() => {
@@ -152,7 +157,7 @@ const PillNav = ({
     }
 
     return () => window.removeEventListener('resize', onResize);
-  }, [items, ease, initialLoadAnimation]);
+  }, [filteredItems, ease, initialLoadAnimation]);
 
   const handleEnter = i => {
     const tl = tlRefs.current[i];
@@ -249,7 +254,7 @@ const PillNav = ({
 
         <div className="pill-nav-items desktop-only" ref={navItemsRef}>
           <ul className="pill-list" role="menubar">
-            {items.map((item, i) => (
+            {filteredItems.map((item, i) => (
               <li key={item.href || `item-${i}`} role="none">
                 {isRouterLink(item.href) ? (
                   <Link
@@ -309,6 +314,9 @@ const PillNav = ({
                 <div className="pill-user-menu">
                   <div className="pill-user-welcome">Welcome, {userName(user)}</div>
                   <div className="pill-user-email">{user.email}</div>
+                  <Link to="/dashboard" className="pill-user-dashboard" onClick={() => setUserMenuOpen(false)}>
+                    Dashboard
+                  </Link>
                   <button type="button" className="pill-user-signout" onClick={handleSignOut}>
                     Sign out
                   </button>
@@ -335,7 +343,7 @@ const PillNav = ({
 
       <div className="mobile-menu-popover mobile-only" ref={mobileMenuRef} style={cssVars}>
         <ul className="mobile-menu-list">
-          {items.map((item, i) => (
+          {filteredItems.map((item, i) => (
             <li key={item.href || `mobile-item-${i}`}>
               {isRouterLink(item.href) ? (
                 <Link
