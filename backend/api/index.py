@@ -12,6 +12,10 @@ Returns a unified JSON response with stats per platform.
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+
 
 from fetchers.leetcode import fetch_leetcode
 from fetchers.codeforces import fetch_codeforces
