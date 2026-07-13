@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { ActivityCalendar } from 'react-activity-calendar';
 import { subDays, format } from 'date-fns';
 import './DashboardSection.css';
@@ -179,10 +179,49 @@ function DashboardSection({ user, profile, stats, onSave }) {
         medium: (stats.leetcode?.medium_solved || 0) + (stats.gfg?.medium_solved || 0),
         hard: (stats.leetcode?.hard_solved || 0) + (stats.gfg?.hard_solved || 0),
       },
-      counts: { lc, cf, gfg, cc, hr }
+      counts: { lc, cf, gfg, cc, hr },
+      lcContests,
+      cfContests
     };
   }, [stats]);
 
+  const heatmapRef = useRef(null);
+
+  useEffect(() => {
+    if (!aggs || !heatmapRef.current) return;
+    
+    // Give ActivityCalendar a moment to render its SVG
+    setTimeout(() => {
+      if (!heatmapRef.current) return;
+      const svg = heatmapRef.current.querySelector('svg');
+      if (svg) {
+        // Clear previous lines
+        svg.querySelectorAll('.month-sep').forEach(el => el.remove());
+        
+        const monthGroup = svg.querySelector('.react-activity-calendar__legend-month');
+        if (monthGroup) {
+          const texts = monthGroup.querySelectorAll('text');
+          texts.forEach((text, i) => {
+            if (i === 0) return; // Skip the first month
+            // Shift slightly left to center the line between columns (block width is 13, gap is 6)
+            const x = parseFloat(text.getAttribute('x')) - 3; 
+            
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x);
+            line.setAttribute('y1', '20'); // Start just below month labels
+            line.setAttribute('x2', x);
+            line.setAttribute('y2', '160'); // End at the bottom of the grid
+            line.setAttribute('stroke', 'rgba(255, 255, 255, 0.25)'); // White line
+            line.setAttribute('stroke-width', '1');
+            line.setAttribute('stroke-dasharray', '4 2'); 
+            line.classList.add('month-sep');
+            
+            svg.appendChild(line);
+          });
+        }
+      }
+    }, 100);
+  }, [aggs]);
 
   /* ── Render ─────────────────────────────────────────────── */
 
@@ -305,7 +344,7 @@ function DashboardSection({ user, profile, stats, onSave }) {
               </div>
 
               <div className="db-card db-heatmap-card">
-                <div className="db-heatmap__scroll">
+                <div className="db-heatmap__scroll" ref={heatmapRef}>
                   <ActivityCalendar 
                     data={aggs.calendarData} 
                     theme={{
