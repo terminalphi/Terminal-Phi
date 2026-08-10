@@ -1,18 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import Threads from './components/Threads';
 import Oneko from './components/Oneko';
 import TerminalOverlay from './components/TerminalOverlay';
 import { getDeviceTier, THREADS_SETTINGS } from './deviceTier';
 import LandingPage from './pages/LandingPage';
-import SignInPage from './pages/SignInPage';
-import MainSite from './pages/MainSite';
-import AboutPage from './pages/AboutPage';
-import ActivitiesPage from './pages/ActivitiesPage';
-import EventsPage from './pages/EventsPage';
-import TeamPage from './pages/TeamPage';
-import JoinPage from './pages/JoinPage';
-import DashboardPage from './pages/DashboardPage';
+
+/* ── Lazy-loaded pages (code-split for faster initial load) ── */
+const SignInPage = lazy(() => import('./pages/SignInPage'));
+const MainSite = lazy(() => import('./pages/MainSite'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ActivitiesPage = lazy(() => import('./pages/ActivitiesPage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
+const TeamPage = lazy(() => import('./pages/TeamPage'));
+const JoinPage = lazy(() => import('./pages/JoinPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Custom terminal commands
@@ -197,21 +199,23 @@ function AnimatedRoutes() {
         </div>
       )}
       <div className={`page-wrapper page-${transitionStage}`}>
-        <Routes location={displayLocation}>
-          <Route path="/" element={
-            localStorage.getItem('hasVisited') === 'true'
-              ? <Navigate to="/home" replace />
-              : <LandingPage />
-          } />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/home" element={<MainSite />} />
-          <Route path="/about_us" element={<AboutPage />} />
-          <Route path="/activities" element={<ActivitiesPage />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/team" element={<TeamPage />} />
-          <Route path="/join_us" element={<JoinPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
+        <Suspense fallback={null}>
+          <Routes location={displayLocation}>
+            <Route path="/" element={
+              localStorage.getItem('hasVisited') === 'true'
+                ? <Navigate to="/home" replace />
+                : <LandingPage />
+            } />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/home" element={<MainSite />} />
+            <Route path="/about_us" element={<AboutPage />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/join_us" element={<JoinPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Routes>
+        </Suspense>
       </div>
 
       {/* Full-screen terminal overlay */}

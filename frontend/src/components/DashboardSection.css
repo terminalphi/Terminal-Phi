@@ -91,17 +91,7 @@
   box-shadow: 0 0 24px var(--accent-glow-strong);
 }
 
-.db-profile__status-dot {
-  position: absolute;
-  bottom: 4px;
-  right: calc(50% - 48px + 8px);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #22c55e;
-  border: 3px solid var(--bg-primary);
-  box-shadow: 0 0 6px #22c55e;
-}
+
 
 .db-profile__name {
   font-family: var(--font-display);
