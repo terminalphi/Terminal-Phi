@@ -242,7 +242,7 @@ function DashboardSection({ user, profile, stats, onSave }) {
           }
           
           path.setAttribute('d', dAttr);
-          path.setAttribute('stroke', 'rgba(255, 255, 255, 0.2)'); 
+          path.setAttribute('stroke', 'rgba(212, 175, 55, 0.25)'); 
           path.setAttribute('stroke-width', '1');
           path.setAttribute('fill', 'none');
           path.classList.add('month-sep');
@@ -378,8 +378,8 @@ function DashboardSection({ user, profile, stats, onSave }) {
                   <ActivityCalendar 
                     data={aggs.calendarData} 
                     theme={{
-                      light: ['#2d2d2d', '#1e4b2d', '#2b783c', '#3db04b', '#48e05a'],
-                      dark: ['#2d2d2d', '#1e4b2d', '#2b783c', '#3db04b', '#48e05a']
+                      light: ['#1a1a1a', '#3d2e0a', '#6b4f12', '#a47a1c', '#d4af37'],
+                      dark: ['#1a1a1a', '#3d2e0a', '#6b4f12', '#a47a1c', '#d4af37']
                     }}
                     colorScheme="dark"
                     blockSize={13}
