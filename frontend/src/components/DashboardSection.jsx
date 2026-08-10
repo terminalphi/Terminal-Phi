@@ -3,6 +3,22 @@ import { ActivityCalendar } from 'react-activity-calendar';
 import { subDays, format } from 'date-fns';
 import './DashboardSection.css';
 
+/* ── Build a 5-step heatmap palette from the live CSS accent ─ */
+function getAccentPalette() {
+  const s = getComputedStyle(document.documentElement);
+  const r = parseInt(s.getPropertyValue('--accent-r')) || 212;
+  const g = parseInt(s.getPropertyValue('--accent-g')) || 175;
+  const b = parseInt(s.getPropertyValue('--accent-b')) || 55;
+  // 5 levels: empty → full intensity
+  return [
+    '#1a1a1a',
+    `rgba(${r}, ${g}, ${b}, 0.2)`,
+    `rgba(${r}, ${g}, ${b}, 0.45)`,
+    `rgba(${r}, ${g}, ${b}, 0.7)`,
+    `rgb(${r}, ${g}, ${b})`
+  ];
+}
+
 /* ── Platform config ─────────────────────────────────────── */
 
 const PLATFORMS = [
@@ -242,7 +258,11 @@ function DashboardSection({ user, profile, stats, onSave }) {
           }
           
           path.setAttribute('d', dAttr);
-          path.setAttribute('stroke', 'rgba(212, 175, 55, 0.25)'); 
+          const cs = getComputedStyle(document.documentElement);
+          const ar = cs.getPropertyValue('--accent-r') || '212';
+          const ag = cs.getPropertyValue('--accent-g') || '175';
+          const ab = cs.getPropertyValue('--accent-b') || '55';
+          path.setAttribute('stroke', `rgba(${ar.trim()}, ${ag.trim()}, ${ab.trim()}, 0.25)`);
           path.setAttribute('stroke-width', '1');
           path.setAttribute('fill', 'none');
           path.classList.add('month-sep');
@@ -268,7 +288,6 @@ function DashboardSection({ user, profile, stats, onSave }) {
               ) : (
                 <div className="db-profile__avatar">{initials}</div>
               )}
-              <div className="db-profile__status-dot" />
             </div>
 
             <h2 className="db-profile__name">{form.name || 'Member'}</h2>
@@ -378,8 +397,8 @@ function DashboardSection({ user, profile, stats, onSave }) {
                   <ActivityCalendar 
                     data={aggs.calendarData} 
                     theme={{
-                      light: ['#1a1a1a', '#3d2e0a', '#6b4f12', '#a47a1c', '#d4af37'],
-                      dark: ['#1a1a1a', '#3d2e0a', '#6b4f12', '#a47a1c', '#d4af37']
+                      light: getAccentPalette(),
+                      dark: getAccentPalette()
                     }}
                     colorScheme="dark"
                     blockSize={13}
